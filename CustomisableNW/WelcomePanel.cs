@@ -42,6 +42,7 @@ namespace CustomisableNW
             welcomelabel.Text = "Super Intelligent\nNeuro Web\nUltra Max Pro 5000+";
             welcomelabel.Font = new Font("Arial", 50);
             welcomelabel.BackColor = Color.Transparent;
+
             welcomelabel.Visible = false;
             welcomelabel.TextAlign = ContentAlignment.MiddleCenter;
             welcomelabel.Width = welcomePanel.Width;
