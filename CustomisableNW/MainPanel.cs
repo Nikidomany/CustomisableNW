@@ -73,7 +73,7 @@ namespace CustomisableNW
             ToolStripMenuItem toolStripMenuItem4 = new ToolStripMenuItem("About");
             toolStripMenuItem4.Click += (o, e) =>
             {
-                string text = "Разработка данного приложения\nцеликом и полностью лежит\nна плечах МинКульта.";
+                string text = "Разработка данного приложения\nцеликом и полностью лежит\nна плечах IlyaProgrammer\n ВО СВЁМ ВИНОВАТ ОН!!!!!!.";
                 MessageBox.Show(text);
             };
             menuStrip.Items.Add(toolStripMenuItem4);
