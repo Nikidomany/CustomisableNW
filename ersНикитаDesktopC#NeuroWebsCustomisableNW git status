@@ -1,0 +1,142 @@
+[1mdiff --git a/CustomisableNW/Web.cs b/CustomisableNW/Web.cs[m
+[1mindex 5d069da..47773fd 100644[m
+[1m--- a/CustomisableNW/Web.cs[m
+[1m+++ b/CustomisableNW/Web.cs[m
+[36m@@ -51,19 +51,17 @@[m [mnamespace CustomisableNW[m
+ [m
+             WeightsInitialize();[m
+             NeuronsInitialize();[m
+[31m-            PrintRandomWeights();[m
+[32m+[m[32m            PrintWeights();[m
+[32m+[m[32m            ActivationsComputing();[m
+         } [m
+ [m
+[31m-[m
+[31m-[m
+[31m-[m
+         private void WeightsInitialize()[m
+         {[m
+             Random random = new Random();[m
+             for(int i = 0; i < hiddenLayersNumber+1; i++) // создание слоя весов[m
+             {[m
+                 weights.Add(new List<List<Weight>>());[m
+[31m-                for(int j = 0; j < (i < neuronsPerLayer.Count ? neuronsPerLayer[i] : 2); j++) // создание весов, идущих к одному нейрону[m
+[32m+[m[32m                for(int j = 0; j < (i < neuronsPerLayer.Count ? neuronsPerLayer[i] : 1); j++) // создание весов, идущих к одному нейрону[m
+                 {[m
+                     weights[i].Add(new List<Weight>());[m
+                     for(int k = 0; k < (i == 0 ? 2 : neuronsPerLayer[i-1]); k++) // создание конкретного веса[m
+[36m@@ -77,19 +75,18 @@[m [mnamespace CustomisableNW[m
+         }[m
+         private void NeuronsInitialize()[m
+         {[m
+[31m-            for(int i = 0; i < hiddenLayersNumber + 1; i++)[m
+[32m+[m[32m            for(int i = 0; i < hiddenLayersNumber; i++)[m
+             {[m
+                 neurons.Add(new List<Neuron>());    // adding a hidden layer[m
+ [m
+[31m-                for (int j = 0; j < (i < hiddenLayersNumber ? neuronsPerLayer[i] : 1); j++)[m
+[32m+[m[32m                for (int j = 0; j < neuronsPerLayer[i]; j++)[m
+                     neurons[i].Add(new Neuron());   // adding a neuron to the hidden layer[m
+             }[m
+             neurons.Add(new List<Neuron> { new Neuron() });     // adding an output neuron[m
+         }[m
+ [m
+ [m
+[31m-[m
+[31m-        void PrintRandomWeights()[m
+[32m+[m[32m        private void PrintWeights()[m
+         {[m
+             string result = "";[m
+ [m
+[36m@@ -98,13 +95,13 @@[m [mnamespace CustomisableNW[m
+ [m
+             for (int i = 0; i < weights.Count; i++) // веса между слоями[m
+             {[m
+[31m-                result += $"\r\n   • {(i == 0 ? "input layer - 2" : (i == weights.Count - 1 ? $"{i+1} layer - output" : $"{i+1} layer - {i + 2}"))} layer:";[m
+[31m-                result += "\r\n       ";[m
+[32m+[m[32m                result += $"\r\n   • {(i == 0 ? "input layer - 1" : (i == weights.Count - 1 ? $"{i} layer - output" : $"{i} layer - {i + 1}"))} layer:";[m
+[32m+[m[32m                result += "\r\n           ";[m
+                 for (int x = 0; x < weights[i].Count; x++) // X axis: N10  N11  N12...[m
+                     result += $"  N{i+1}{x}  ";[m
+                 for (int j = 0; j < (i == 0 ? 2 : weights[i-1].Count); j++) // веса ведущие к одному нейрону[m
+                 {[m
+[31m-                    result += $"\r\n N{i}{j}";[m
+[32m+[m[32m                    result += $"\r\n     N{i}{j}";[m
+                     for (int k = 0; k < weights[i].Count; k++)[m
+                     {[m
+                         string sign = (weights[i][k][j].Value < 0 ? "" : " ");[m
+[36m@@ -115,14 +112,33 @@[m [mnamespace CustomisableNW[m
+ [m
+             form.TextBox += result;[m
+         }[m
+[31m-       [m
+         private void PrintActivations()[m
+         {[m
+[31m-            string result;[m
+[31m-            [m
+[32m+[m[32m            string result = "\r\n\r\nNeuron activation:";[m
+ [m
+[32m+[m[32m            int maxNeuronsNumber = 0;[m
+[32m+[m[32m            for(int i = 0; i < neuronsPerLayer.Count; i++) // biggest layer computing[m
+[32m+[m[32m                if(neurons[i].Count > maxNeuronsNumber)[m
+[32m+[m[32m                    maxNeuronsNumber = neuronsPerLayer[i];[m
+ [m
+[32m+[m[32m            result += "\r\n          ";[m
+[32m+[m[32m            for (int i = 0; i < hiddenLayersNumber + 2; i++)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                string layerName = (i == 0 ? "Inp" : (i == hiddenLayersNumber + 1 ? " Out" : $"  {i}-H "));[m
+[32m+[m[32m                result += $"  {layerName} ";[m
+[32m+[m[32m            }[m
+ [m
+[32m+[m[32m            for (int i = 0; i < maxNeuronsNumber; i++) // i-th neuron in j-th layer[m
+[32m+[m[32m            {[m
+[32m+[m[32m                result += $"\r\n     N{i} ";[m
+[32m+[m[32m                result += $"   {(i < 2 ? $"{TrainSet.Input(TrainSetNumber())[i]}" : " -")}   "; // input value or "  " (when i>1)[m
+[32m+[m[32m                for (int j = 0; j < neurons.Count; j++) // j-th layer[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    string activation = (i < neurons[j].Count) ? (Math.Round(neurons[j][i].Activation,2).ToString()) : "  -   ";[m
+[32m+[m[32m                    result += $"   {activation}  ";[m
+[32m+[m[32m                }[m
+[32m+[m[32m            }[m
+[32m+[m[32m            form.TextBox += result;[m
+         }[m
+ [m
+ [m
+[36m@@ -145,26 +161,21 @@[m [mnamespace CustomisableNW[m
+                     }[m
+                     else if(i == hiddenLayersNumber) // for the output neuron layer[m
+                     {[m
+[31m-                        for (int k = 0; k < neuronsPerLayer[i - 1]; i++)[m
+[32m+[m[32m                        for (int k = 0; k < neuronsPerLayer[i - 1]; k++)[m
+                             inputValue += neurons[i - 1][k].Activation * weights[i][j][k].Value;[m
+                     }[m
+ [m
+                     neurons[i][j].Activation = ActivationFunction.Sigmoid(inputValue); // recording output neuron value[m
+                 }[m
+[32m+[m[32m            PrintActivations();[m
+         }[m
+ [m
+ [m
+         [m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+         [m
+         private int TrainSetNumber()[m
+         {[m
+[31m-            return 10;[m
+[32m+[m[32m            return 1;[m
+         }[m
+         [m
+     }[m
+[36m@@ -213,7 +224,6 @@[m [mnamespace CustomisableNW[m
+ [m
+ [m
+ [m
+[31m-[m
+     static class TrainSet[m
+     {[m
+         static private List<List<int>> input = new List<List<int>>[m

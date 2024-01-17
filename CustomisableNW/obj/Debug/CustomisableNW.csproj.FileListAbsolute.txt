@@ -9,3 +9,14 @@ C:\Users\Никита\Desktop\С#\NeuroWebs\CustomisableNW\CustomisableNW\obj\De
 C:\Users\Никита\Desktop\С#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.exe
 C:\Users\Никита\Desktop\С#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.pdb
 C:\Users\Никита\Desktop\С#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.MainForm.resources
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\bin\Debug\CustomisableNW.exe.config
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\bin\Debug\CustomisableNW.exe
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\bin\Debug\CustomisableNW.pdb
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.csproj.AssemblyReference.cache
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.csproj.SuggestedBindingRedirects.cache
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.MainForm.resources
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.Properties.Resources.resources
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.csproj.GenerateResource.cache
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.csproj.CoreCompileInputs.cache
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.exe
+C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\obj\Debug\CustomisableNW.pdb

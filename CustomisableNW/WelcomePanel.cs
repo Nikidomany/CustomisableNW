@@ -25,25 +25,23 @@ namespace CustomisableNW
             SettingsPanelGraphics();
             SchemePanelGraphics();
 
-            //// ВРЕМЕННО
-            //buttonStart.Visible = true;
-            //buttonStart.Enabled = true;
+            //// ALARM!!!!!
+            buttonStart.Visible = true;
+            buttonStart.Enabled = true;
         }
 
         void WelcomePanelGraphics()
         {
             // welcomePanel. settings
             welcomePanel.Dock = DockStyle.Fill;
-            string picturePath = @"C:\Users\Никита\Desktop\С#\NeuroWebs\CustomisableNW\CustomisableNW\Pictures\WelcomePicture.png";
+            string picturePath = @"C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\Pictures\WelcomePicture.png";
             welcomePanel.BackgroundImage = Image.FromFile(picturePath);
             Controls.Add(welcomePanel);
 
             // label settings
-
             welcomelabel.Text = "Super Intelligent\nNeuro Net\nUltra Max Pro 5000+";
             welcomelabel.Font = new Font("Arial", 50);
             welcomelabel.BackColor = Color.Transparent;
-
             welcomelabel.Visible = false;
             welcomelabel.TextAlign = ContentAlignment.MiddleCenter;
             welcomelabel.Width = welcomePanel.Width;
@@ -69,7 +67,7 @@ namespace CustomisableNW
             };
             welcomePanel.Controls.Add(buttonStart);
 
-            WelcomePanelAnimanion();
+            //WelcomePanelAnimanion();
         }
 
         void WelcomePanelAnimanion()
