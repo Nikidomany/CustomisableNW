@@ -22,7 +22,7 @@ namespace CustomisableNW
         Panel settingsPanel = new Panel();
 
         public int hiddenLayersNum = 1;
-        public List<int> neuronsPerHiddenLayer = new List<int> { 1 };
+        public List<int> neuronsPerHiddenLayer = new List<int> { 3 };
         
         List<NumericUpDown> NUDList = new List<NumericUpDown>();
 
