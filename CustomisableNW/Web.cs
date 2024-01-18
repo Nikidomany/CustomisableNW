@@ -24,7 +24,7 @@ namespace CustomisableNW
 
     class Net
     {
-        // commit adding whithout saving`
+        // commit adding WHITH saving
         MainForm form;
 
 
