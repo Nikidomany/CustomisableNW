@@ -24,6 +24,7 @@ namespace CustomisableNW
 
     class Net
     {
+        // new commit
         MainForm form;
 
 
