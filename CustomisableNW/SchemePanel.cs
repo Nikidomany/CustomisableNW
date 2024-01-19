@@ -6,27 +6,31 @@ namespace CustomisableNW
 {
     public partial class MainForm
     {
-        Panel schemePanel = new Panel();
-        PictureBox schemePB = new PictureBox();
-
-
+        Panel schemePanel;
+        PictureBox schemePB;
 
         //public List<List<Label>> ActivationLabelsList { get => activationLabelsList; set => activationLabelsList = value; }
         private List<List<Label>> activationLabelsList = new List<List<Label>>();
 
 
-
-
         // графическое представление сети
         void SchemePanelGraphics()
         {
-            schemePanel.Visible = false;
-            schemePanel.Location = new Point(0, menuStrip.Height);
-            schemePanel.Size = new Size(mainPanel.Width, mainPanel.Height - menuStrip.Height - statusStrip.Height);
+            // schemePanel settings
+            schemePanel = new Panel
+            {
+                Visible = false,
+                Location = new Point(0, menuStrip.Height),
+                Size = new Size(mainPanel.Width, mainPanel.Height - menuStrip.Height - statusStrip.Height)
+            };
             mainPanel.Controls.Add(schemePanel);
 
-            schemePB.Size = new Size(schemePanel.Width, schemePanel.Height);
-            schemePB.BorderStyle = BorderStyle.Fixed3D;
+            // scheme PictureBox settings
+            schemePB = new PictureBox
+            {
+                Size = new Size(schemePanel.Width, schemePanel.Height),
+                BorderStyle = BorderStyle.Fixed3D
+            };
             schemePanel.Controls.Add(schemePB);
 
 

@@ -53,8 +53,8 @@ namespace CustomisableNW
                 TextAlign = ContentAlignment.MiddleCenter,
                 Size = new Size(settingsPanel.Width, 40),
                 Font = new Font(font, 22),
+                Location = new Point(settingsPanel.Width / 2 - 255)
             };
-            lab1.Location = new Point(settingsPanel.Width / 2 - lab1.Width / 2);
             settingsPanel.Controls.Add(lab1);
 
 
