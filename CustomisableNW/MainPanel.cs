@@ -70,7 +70,6 @@ namespace CustomisableNW
                 diagramPanel.Visible = false;
                 dataPanel.Visible = false;
                 schemePanel.Visible = true;
-                //Drawing1();
                 Drawing();
             };
             menuStrip.Items.Add(toolStripMenuItem3);

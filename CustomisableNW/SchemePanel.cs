@@ -1,13 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System;
 
 namespace CustomisableNW
 {
     public partial class MainForm
     {
+        
+
         Panel schemePanel;
         PictureBox schemePB;
+        
+
+        List<List<Label>> neuronLabels;
+
+        private List<List<Point>> neuronsCoordinates;
 
         //public List<List<Label>> ActivationLabelsList { get => activationLabelsList; set => activationLabelsList = value; }
         private List<List<Label>> activationLabelsList = new List<List<Label>>();
@@ -16,6 +24,8 @@ namespace CustomisableNW
         // графическое представление сети
         void SchemePanelGraphics()
         {
+
+
             // schemePanel settings
             schemePanel = new Panel
             {
@@ -36,90 +46,90 @@ namespace CustomisableNW
 
         }
 
+        private void NeuronsCoordinatesComputing()
+        {
+            // INPUT: schemePanel.Size, layers quantity, neurons per layer quantity
+            // OUTPUT: List<List<Point>> neuronCoordinates
 
-        Pen inputNeuronPen = new Pen(Color.Red, 2);
-        Pen hiddenNeuronPen = new Pen(Color.Blue, 2);
-        Pen outputNeuronPen = new Pen(Color.Red, 2);
-        Pen weightPen = new Pen(Color.Black, 1);
+            List<List<Point>> result = new List<List<Point>>();
+
+            int neuronDiameter = schemePB.Height / 20;
+
+            int xDistance = neuronDiameter * 4, // distance between neurons
+                yDistance = neuronDiameter * 2;
+
+            int xStartPosition = (schemePB.Width - xDistance * (hiddenLayersNum + 2)) / 2;
+            int[] yStartPosition = new int[hiddenLayersNum + 2];
+            for (int i = 0; i < yStartPosition.Length; i++)
+                yStartPosition[i] = (schemePB.Height - yDistance * neuronsPerLayer[i]) / 2;
+                
+            // coordinates computing
+            for (int i = 0; i < hiddenLayersNum + 2; i++)
+            {
+                result.Add(new List<Point>());
+                for (int j = 0; j < neuronsPerLayer[i] ; j++)
+                {
+                    int x = xStartPosition + xDistance * i,
+                        y = yStartPosition[i] + yDistance * j;
+
+                    result[i].Add(new Point(x,y));
+                }
+            }
+            neuronsCoordinates = result;
+        }
+
         private void Drawing()
         {
-            Graphics scheme = schemePB.CreateGraphics(); // область построения
+            NeuronsCoordinatesComputing();
+
+            Graphics scheme = schemePB.CreateGraphics();
             scheme.Clear(schemePanel.BackColor);
+            
+            Pen inputOrOutputNeuronPen = new Pen(Color.Red, 2);
+            Pen hiddenNeuronPen = new Pen(Color.Blue, 2);
+            Pen weightPen = new Pen(Color.Black, 1);
 
-            int nDiameter = schemePB.Height / 20; ; // диаметр круга нейронов
-            int vDis = nDiameter * 2, hDis = nDiameter * 4; // растония между слоями и нейронами в слоях
-            int x = -nDiameter / 2, y = -nDiameter / 2; //смещения для отрисовки груга нейрона по координатам не края, а центра
-            int horisontalStartPosition = (schemePB.Width - (nDiameter + hDis) * (hiddenLayersNum + 1)) / 2; //Начальная позиция отрисовки первого слоя по оси X
-            int[] verticalStartPosition = new int[4];
-            for (int i = 0; i < neuronsPerHiddenLayer.Count; i++)
-                verticalStartPosition[i] = schemePB.Height / 2 - nDiameter * (neuronsPerHiddenLayer[i] - 1);  //Начальная позиция отрисовки скрытых слоёв по оси Y (упрощённая выведенная формула)
+            int neuronDiameter = schemePB.Height / 20;
+            int xCorrection = -neuronDiameter/2, // for drawing neurons from center, not from top left angle
+                yCorrection = -neuronDiameter/2;
 
-            // input neurons drowing
-            for (int i = 0; i < 2; i++)
-                scheme.DrawEllipse(
-                    inputNeuronPen,
-                    horisontalStartPosition + x,
-                    schemePB.Height / 2 + (i == 0 ? 1 : -1) * nDiameter + y,
-                    nDiameter,
-                    nDiameter);
-
-            // hidden layers drowing
-            for (int i = 0; i < hiddenLayersNum; i++) // i - layer number
-                for (int j = 0; j < neuronsPerHiddenLayer[i]; j++) // j - neuron number
+            for(int i = 0; i < neuronsPerLayer.Count; i++)
+                for(int j = 0; j < neuronsPerLayer[i] ; j++)
                 {
-                    int xCoordinate = horisontalStartPosition + hDis * (i + 1) + x; //расстояние от края до входного слоя + i расстояний до скрытого слоя + x(коррекция)
-                    int yCoordinate = verticalStartPosition[i] + vDis * j + y;   //расстояние от верхнего края schemePB до верхнего нейрона скрытого слоя + j расстояний между центрами нейронов
+                    //neuron drawing
+                    Pen neuronPen = (i == 0 || i == neuronsPerLayer.Count - 1) ? inputOrOutputNeuronPen : hiddenNeuronPen;
+                    int x = neuronsCoordinates[i][j].X + xCorrection,
+                        y = neuronsCoordinates[i][j].Y + yCorrection + 30;
+                    int diameter = neuronDiameter;
+                    
+                    scheme.DrawEllipse(neuronPen, x, y, diameter, diameter);
 
-                    scheme.DrawEllipse(
-                        hiddenNeuronPen,
-                        xCoordinate,
-                        yCoordinate,
-                        nDiameter,
-                        nDiameter);
 
-                    if (i == 0) //1st hidden layer
-                    {
-                        for (int k = 0; k < 2; k++)
-                            scheme.DrawLine(
-                                weightPen,
-                                horisontalStartPosition + nDiameter / 2,     //X1
-                                schemePB.Height / 2 - nDiameter + vDis * k,  //Y1
-                                xCoordinate,                                 //X2
-                                yCoordinate + nDiameter / 2                  //Y2
-                                );
-                    }
-                    else if (i > 0) //2nd and others hidden layers
-                    {
-                        for (int k = 0; k < neuronsPerHiddenLayer[i - 1]; k++)
-                            scheme.DrawLine(
-                                weightPen,
-                                xCoordinate - hDis + nDiameter,                               //X1
-                                (verticalStartPosition[i - 1] + vDis * j + y) + nDiameter / 2 + vDis * (k - j),                 //Y1
-                                xCoordinate,                                                  //X2
-                                verticalStartPosition[i] + vDis * j//Y2             
-                                );
-
-                    }
-
-                    if (i == hiddenLayersNum - 1)
-                        scheme.DrawLine(
-                            weightPen,
-                            xCoordinate + nDiameter,
-                            yCoordinate + nDiameter / 2,
-                            horisontalStartPosition + hDis * (hiddenLayersNum + 1) - nDiameter / 2,
-                            schemePB.Height / 2
-                            );
+                    //weights drawing
+                    if (i > 0)
+                        for (int k = 0; k < neuronsPerLayer[i - 1]; k++)
+                        {
+                            int x1 = neuronsCoordinates[i - 1][k].X + neuronDiameter / 2,
+                                y1 = neuronsCoordinates[i - 1][k].Y + 30,
+                                x2 = neuronsCoordinates[i][j].X - neuronDiameter / 2,
+                                y2 = neuronsCoordinates[i][j].Y + 30;
+                           
+                            scheme.DrawLine(weightPen, x1, y1, x2, y2);
+                        }
                 }
-
-            // output neuron drawing
-            scheme.DrawEllipse(
-                outputNeuronPen,
-                horisontalStartPosition + hDis * (hiddenLayersNum + 1) + x,
-                schemePB.Height / 2 + y,
-                nDiameter,
-                nDiameter);
+        }
 
 
+
+        private Label NeuronLabel(int x, int y)
+        {
+            return new Label
+            {
+                Text = "-",
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font(font, 10),
+                Location = new Point(x, y)
+            };
         }
 
     }

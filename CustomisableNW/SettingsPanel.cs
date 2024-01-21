@@ -22,7 +22,7 @@ namespace CustomisableNW
         Panel settingsPanel = new Panel();
 
         public int hiddenLayersNum = 1;
-        public List<int> neuronsPerHiddenLayer = new List<int> { 3 };
+        public List<int> neuronsPerLayer = new List<int> { 2, 3, 1 };
         
         List<NumericUpDown> NUDList = new List<NumericUpDown>();
 
@@ -85,10 +85,11 @@ namespace CustomisableNW
                 for (int i = 0; i < 4; i++)     // visualization/hiding NUDs
                     NUDList[i].Visible = (i <= hiddenlayersNUD.Value - 1) ? true : false;
 
-                neuronsPerHiddenLayer = new List<int>();  
+                neuronsPerLayer = new List<int> { 2}; // 2 - input neurons 
                 for (int i = 0; i < hiddenlayersNUD.Value; i++) // recording actual neurons number per layer
-                    neuronsPerHiddenLayer.Add((int)NUDList[i].Value); 
-                
+                    neuronsPerLayer.Add((int)NUDList[i].Value);
+                neuronsPerLayer.Add(1); //  - output neuron
+
                 Drawing(); // drawing scheme according to updated data 
             };
             settingsPanel.Controls.Add(hiddenlayersNUD);
@@ -121,7 +122,7 @@ namespace CustomisableNW
                 NUD.ValueChanged += (o, e) =>
                 {
 
-                    neuronsPerHiddenLayer[(int)NUD.Tag] = (int)NUD.Value;
+                    neuronsPerLayer[(int)NUD.Tag+1] = (int)NUD.Value;
                     Drawing();
                 };
                 NUDList.Add(NUD);

@@ -46,8 +46,8 @@ namespace CustomisableNW
             form.runButton.Click += (s, e) => {  };
 
 
-            this.hiddenLayersNumber = form.hiddenLayersNum; // скрытых слоёв
-            this.neuronsPerLayer = form.neuronsPerHiddenLayer;       // нейронов в скрытых слоях соответсвенно
+            this.hiddenLayersNumber = form.hiddenLayersNum; // ERROR (irrelevant value)
+            this.neuronsPerLayer = form.neuronsPerLayer;       // ERROR (irrelevant value)
             form.TextBox += "Web created!\r\n";
 
             WeightsInitialize();
