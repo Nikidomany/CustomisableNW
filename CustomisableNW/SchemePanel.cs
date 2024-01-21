@@ -89,7 +89,7 @@ namespace CustomisableNW
             Pen hiddenNeuronPen = new Pen(Color.Blue, 2);
             Pen weightPen = new Pen(Color.Black, 1);
 
-            int neuronDiameter = schemePB.Height / 20;
+            int neuronDiameter = schemePB.Height / 15;
             int xCorrection = -neuronDiameter/2, // for drawing neurons from center, not from top left angle
                 yCorrection = -neuronDiameter/2;
 
@@ -117,18 +117,43 @@ namespace CustomisableNW
                             scheme.DrawLine(weightPen, x1, y1, x2, y2);
                         }
                 }
+
+            LabelsDrawing();
         }
 
+        private void LabelsDrawing()
+        {
+            neuronLabels = new List<List<Label>>();
+            schemePB.Controls.Clear();
 
+            for (int i = 0; i < neuronsPerLayer.Count; i++)
+            {
+                neuronLabels.Add(new List<Label>());
+                for(int j = 0; j < neuronsPerLayer[i]; j++)
+                {
+                    Label label = CreateNeuronLabel(neuronsCoordinates[i][j].X, neuronsCoordinates[i][j].Y);
+                    neuronLabels[i].Add(label);
+                    schemePB.Controls.Add(label);
+                }
+            }
+        }
 
-        private Label NeuronLabel(int x, int y)
+        public void UpdateNeuronLabels(List<List<Neuron>> neuron)
+        {
+            for(int i = 0; i < neuronLabels.Count; i++)
+                for(int j = 0; j < neuronLabels[i].Count; j++)
+                    neuronLabels[i][j].Text = neuron[i][j].Activation.ToString();
+        }
+
+        private Label CreateNeuronLabel(int x, int y)
         {
             return new Label
             {
                 Text = "-",
                 TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font(font, 10),
-                Location = new Point(x, y)
+                Font = new Font(font, 8),
+                Size = new Size(40, 14),
+                Location = new Point(x - 19, y + 23)
             };
         }
 

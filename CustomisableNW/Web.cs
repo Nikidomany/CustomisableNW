@@ -195,7 +195,7 @@ namespace CustomisableNW
         }
         List<float> values = new List<float>();
     }
-    class Neuron
+    public class Neuron
     {
         public float Activation
         {
