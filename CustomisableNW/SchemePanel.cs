@@ -17,7 +17,6 @@ namespace CustomisableNW
 
         private List<List<Point>> neuronsCoordinates;
 
-        //public List<List<Label>> ActivationLabelsList { get => activationLabelsList; set => activationLabelsList = value; }
         private List<List<Label>> activationLabelsList = new List<List<Label>>();
 
 
@@ -137,12 +136,11 @@ namespace CustomisableNW
                 }
             }
         }
-
-        public void UpdateNeuronLabels(List<List<Neuron>> neuron)
+        public void UpdateNeuronLabels()
         {
             for(int i = 0; i < neuronLabels.Count; i++)
                 for(int j = 0; j < neuronLabels[i].Count; j++)
-                    neuronLabels[i][j].Text = neuron[i][j].Activation.ToString();
+                    neuronLabels[i][j].Text = net.Neurons[i][j].Activation.ToString();
         }
 
         private Label CreateNeuronLabel(int x, int y)

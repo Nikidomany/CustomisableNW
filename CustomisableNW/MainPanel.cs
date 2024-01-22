@@ -71,6 +71,8 @@ namespace CustomisableNW
                 dataPanel.Visible = false;
                 schemePanel.Visible = true;
                 Drawing();
+                if (setButton.Text == "RESET") // КОСТЫЛЬ!!!
+                    UpdateNeuronLabels();
             };
             menuStrip.Items.Add(toolStripMenuItem3);
 
@@ -101,36 +103,5 @@ namespace CustomisableNW
 
         }
 
-        //void PanelVisualizer()
-        //{
-        //    List<Panel> panels = new List<Panel>
-        //    {
-        //        dataPanel,
-        //        schemePanel,
-        //        diagramPanel
-        //    };
-        //    List<ToolStripMenuItem> toolStripMenuItems = new List<ToolStripMenuItem>();
-        //    foreach (ToolStripMenuItem toolStripMenuItem in menuStrip.Items)
-        //    {
-        //        toolStripMenuItems.Add(toolStripMenuItem);
-        //    }
-
-
-        //    for(int i = 0; i < panels.Count; i++)
-        //    {
-        //        if ()
-        //        {
-        //            //item подкрасить
-        //            // панель визуализировать
-        //        }
-        //        else
-        //        {
-        //            //item обесцветить
-        //            //панель спрятать
-        //        }
-        //    }
-
-
-        //}
     }
 }

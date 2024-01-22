@@ -24,177 +24,110 @@ namespace CustomisableNW
 
     class Net
     {
-        // commit adding WHITH saving
-        MainForm form;
-
-
-
-        private int hiddenLayersNumber;
         private List<int> neuronsPerLayer;
-        private float minWeightsValue, maxWeightsValue;
+        private float learningRate,
+                      moment;
+        private float maxWeightsRandomization,
+                      minWeightsRandomization;
 
-        List<List<List<Weight>>> weights = new List<List<List<Weight>>>();
-        List<List<Neuron>> neurons = new List<List<Neuron>>();
+        private List<int[]> trainingSet;
+
+        public int TrainingSetNumber { get { return trainingSetNumber; } }
+        private int trainingSetNumber = 0;
+
+        public List<List<Neuron>> Neurons { get { return neurons; } } 
+        private List<List<Neuron>> neurons = new List<List<Neuron>>();
+        
 
 
-        public Net(MainForm form)
+        public Net(List<int> neuronsPerLayer, float learningRate, float moment, float maxWeightsRandomization, float minWeightsRandomization, List<int[]> trainingSet)
         {
-            this.form = form;
-            minWeightsValue = form.MinWeightsRandomize;
-            maxWeightsValue = form.MaxWeightsRandomize;
+            this.neuronsPerLayer = neuronsPerLayer;
+            this.learningRate = learningRate;
+            this.moment = moment;
+            this.maxWeightsRandomization = maxWeightsRandomization;
+            this.minWeightsRandomization = minWeightsRandomization;
+            this.trainingSet = trainingSet;
 
-            form.runButton.Click += (s, e) => {  };
-
-
-            this.hiddenLayersNumber = form.hiddenLayersNum; // ERROR (irrelevant value)
-            this.neuronsPerLayer = form.neuronsPerLayer;       // ERROR (irrelevant value)
-            form.TextBox += "Web created!\r\n";
-
-            WeightsInitialize();
             NeuronsInitialize();
-            PrintWeights();
+            InitialNeuronWeightsSetting();
             ActivationsComputing();
-        } 
-
-        private void WeightsInitialize()
-        {
-            Random random = new Random();
-            for(int i = 0; i < hiddenLayersNumber+1; i++) // создание слоя весов
-            {
-                weights.Add(new List<List<Weight>>());
-                for(int j = 0; j < (i < neuronsPerLayer.Count ? neuronsPerLayer[i] : 1); j++) // создание весов, идущих к одному нейрону
-                {
-                    weights[i].Add(new List<Weight>());
-                    for(int k = 0; k < (i == 0 ? 2 : neuronsPerLayer[i-1]); k++) // создание конкретного веса
-                    {
-                        int value = random.Next((int)(minWeightsValue * 100), (int)(maxWeightsValue * 100)); // установка рандомного значения в заданных пределах 
-                        weights[i][j].Add(new Weight((float)value/100));
-                    }
-                }
-            }
-            
         }
+
+
+
         private void NeuronsInitialize()
         {
-            for(int i = 0; i < hiddenLayersNumber; i++)
+            for(int i = 0; i < neuronsPerLayer.Count; i++)
             {
-                neurons.Add(new List<Neuron>());    // adding a hidden layer
+                neurons.Add(new List<Neuron>());    // layer adding
 
                 for (int j = 0; j < neuronsPerLayer[i]; j++)
-                    neurons[i].Add(new Neuron());   // adding a neuron to the hidden layer
+                {
+                    neurons[i].Add(new Neuron());   // neuron adding
+
+                    for (int k = 0; k < (i == 0 ? 0 : neuronsPerLayer[i - 1]); k++)
+                        neurons[i][j].Weights.Add(new Weight());
+                }
             }
-            neurons.Add(new List<Neuron> { new Neuron() });     // adding an output neuron
-        }
-
-
-        private void PrintWeights()
-        {
-            string result = "";
-
-            result += "\r\nWeights randomizing:";
             
-
-            for (int i = 0; i < weights.Count; i++) // веса между слоями
-            {
-                result += $"\r\n   • {(i == 0 ? "input layer - 1" : (i == weights.Count - 1 ? $"{i} layer - output" : $"{i} layer - {i + 1}"))} layer:";
-                result += "\r\n           ";
-                for (int x = 0; x < weights[i].Count; x++) // X axis: N10  N11  N12...
-                    result += $"  N{i+1}{x}  ";
-                for (int j = 0; j < (i == 0 ? 2 : weights[i-1].Count); j++) // веса ведущие к одному нейрону
-                {
-                    result += $"\r\n     N{i}{j}";
-                    for (int k = 0; k < weights[i].Count; k++)
-                    {
-                        string sign = (weights[i][k][j].Value < 0 ? "" : " ");
-                        result += $" {sign}{weights[i][k][j].Value} ";
-                    }
-                }
-            }
-
-            form.TextBox += result;
         }
-        private void PrintActivations()
+        private void InitialNeuronWeightsSetting()
         {
-            string result = "\r\n\r\nNeuron activation:";
+            Random random = new Random();
 
-            int maxNeuronsNumber = 0;
-            for(int i = 0; i < neuronsPerLayer.Count; i++) // biggest layer computing
-                if(neurons[i].Count > maxNeuronsNumber)
-                    maxNeuronsNumber = neuronsPerLayer[i];
-
-            result += "\r\n          ";
-            for (int i = 0; i < hiddenLayersNumber + 2; i++)
-            {
-                string layerName = (i == 0 ? "Inp" : (i == hiddenLayersNumber + 1 ? " Out" : $"  {i}-H "));
-                result += $"  {layerName} ";
-            }
-
-            for (int i = 0; i < maxNeuronsNumber; i++) // i-th neuron in j-th layer
-            {
-                result += $"\r\n     N{i} ";
-                result += $"   {(i < 2 ? $"{TrainSet.Input(TrainSetNumber())[i]}" : " -")}   "; // input value or "  " (when i>1)
-                for (int j = 0; j < neurons.Count; j++) // j-th layer
-                {
-                    string activation = (i < neurons[j].Count) ? (Math.Round(neurons[j][i].Activation,2).ToString()) : "  -   ";
-                    result += $"   {activation}  ";
-                }
-            }
-            form.TextBox += result;
+            for(int i = 1; i < neuronsPerLayer.Count; i++)
+                for(int j = 0; j < neuronsPerLayer[i]; j++)
+                    for(int k = 0; k < neurons[i][j].Weights.Count; k++)
+                    {
+                        int temp = random.Next((int)(minWeightsRandomization * 100), (int)(maxWeightsRandomization * 100));
+                        float value = (float)temp / 100;
+                        neurons[i][j].Weights[k].Value = value;
+                    }
         }
 
 
         private void ActivationsComputing()
         {
-            for(int i = 0; i < hiddenLayersNumber + 1; i++) // i-th hidden neural layer
-                for(int j = 0; j < (i < hiddenLayersNumber ? neuronsPerLayer[i] : 1); j++) // j-th neuron (in i-th hidden neural layer)
+            for(int j = 0; j < 2; j++)
+                neurons[0][j].Activation = trainingSet[trainingSetNumber][j];  // input neurons
+
+            for (int i = 1; i < neuronsPerLayer.Count; i++) // i-th neural layer
+                for(int j = 0; j < neuronsPerLayer[i]; j++) // j-th neuron (in i-th hidden neural layer)
                 {
-                    float inputValue = 0; // the sum of the multiplications of the weights and activations
-
-                    if(i == 0) // for the first hidden neural layer
-                    {
-                        for(int k = 0; k < 2; k++)
-                            inputValue += (TrainSet.Input(TrainSetNumber())[k] * weights[i][j][k].Value);
-                    }
-                    else if(i > 0 && i < hiddenLayersNumber) // for the second and next hidden neuron layers
-                    {
-                        for(int k = 0; k < neuronsPerLayer[i-1]; k++)
-                            inputValue += neurons[i - 1][k].Activation* weights[i][j][k].Value;
-                    }
-                    else if(i == hiddenLayersNumber) // for the output neuron layer
-                    {
-                        for (int k = 0; k < neuronsPerLayer[i - 1]; k++)
-                            inputValue += neurons[i - 1][k].Activation * weights[i][j][k].Value;
-                    }
-
-                    neurons[i][j].Activation = ActivationFunction.Sigmoid(inputValue); // recording output neuron value
+                    float inputValue = 0;
+                    for (int k = 0; k < neuronsPerLayer[i-1]; k++)
+                        inputValue += neurons[i - 1][k].Activation * neurons[i][j].Weights[k].Value;
+                    neurons[i][j].Activation = ActivationFunction.Sigmoid(inputValue);
                 }
-            PrintActivations();
+        }
+
+
+        public void PlusIteration(bool[] xxxx, int iterationQuantity = 1)
+        {
+
+        }
+        public void PlusEpoch(bool[] xxxx, int epochsQuantity = 1)
+        {
+
         }
 
 
         
-        
-        private int TrainSetNumber()
+        private void IncrementTrainSetNumber()
         {
-            return 1;
+            if (trainingSetNumber == 4)
+                trainingSetNumber = 0;
+            else
+                trainingSetNumber++;
         }
         
     }
 
 
-    class Weight
-    {
-        public Weight(float value)
-        {
-            values.Add(value);
-        }
-        public float Value
-        {
-            get { return values[values.Count - 1]; }
-            set { values.Add(value); }
-        }
-        List<float> values = new List<float>();
-    }
+    
+    
+     
     public class Neuron
     {
         public float Activation
@@ -202,11 +135,32 @@ namespace CustomisableNW
             get { return activations[activations.Count - 1]; }
             set { activations.Add(value); }
         }
+        public List<Weight> Weights
+        {
+            get { return weights; }
+            set { weights = value; }
+        }
+
         List<float> activations = new List<float>();
+        List<Weight> weights = new List<Weight>();
 
     }
+    public class Weight
+    {
+        public float Value
+        {
+            get { return values[values.Count-1]; }
+            set { values.Add(value); }
+        }
+        public List<float> ValuesList // исправить
+        {
+            get { return values; }
+        }
 
+        List<float> values = new List<float>();
+    }
 
+    
 
     static class ActivationFunction
     {
@@ -223,78 +177,51 @@ namespace CustomisableNW
 
     }
 
-
-
-    static class TrainSet
+    enum TrainingFunction
     {
-        static private List<List<int>> input = new List<List<int>>
-        {
-            new List<int>{0,0},
-            new List<int>{0,1},
-            new List<int>{1,0},
-            new List<int>{1,1},
-        };
-
-        static private Dictionary<string, List<int>> output = new Dictionary<string, List<int>>
-        {
-            {"XOR", new List<int> {0, 1, 1, 0}},
-            {"OR", new List<int> {0, 1, 1, 1}},
-            {"AND", new List<int> {1, 0, 0, 1}}
-        };
-
-        static public int[] Input(int trainCoupleNumber)
-        {
-            return new int[] { input[trainCoupleNumber][0], input[trainCoupleNumber][1] };
-        }
-        static public int Output(string trainFunction, int trainCoupleNumber)
-        {
-            return output[trainFunction][trainCoupleNumber];
-        }
+        XOR,
+        OR,
+        AND
     }
 
+    static class TrainingSet 
+    {
+        public static List<int[]> GetTrainingSet(TrainingFunction e)
+        {
+            List<int[]> result = null;
+            result = dictionary[e];
+            return result;
+        }
 
 
+        static private List<int[]> XOR = new List<int[]>
+        {
+            new int[] { 0 , 0 , 0 },
+            new int[] { 0 , 1 , 1 },
+            new int[] { 1 , 0 , 1 },
+            new int[] { 1 , 1 , 0 },
+        };
+        static private List<int[]> OR = new List<int[]>
+        {
+            new int[] { 0 , 0 , 0 },
+            new int[] { 0 , 1 , 1 },
+            new int[] { 1 , 0 , 1 },
+            new int[] { 1 , 1 , 1 },
+        };
+        static private List<int[]> AND = new List<int[]>
+        {
+            new int[] { 0 , 0 , 0 },
+            new int[] { 0 , 1 , 0 },
+            new int[] { 1 , 0 , 0 },
+            new int[] { 1 , 1 , 1 },
+        };
 
-
-
-
-
-
-
-
-
-
-
-
-
-    //class InputNeuron
-    //{
-    //    public float Activation // Свойство, хранящее в себе ативацию нейрона и его логи, а так же записывающее новое значение
-    //    {
-    //        get { return activations[activations.Count - 1]; }
-    //        set { activations.Add(value); }
-    //    }
-    //    List<float> activations = new List<float>();
-    //}
-    //class HiddenNeuron
-    //{
-    //    public float Activation
-    //    {
-    //        get { return activations[activations.Count - 1]; }
-    //        set { activations.Add(value); }
-    //    }
-    //    List<float> activations = new List<float>();
-    //}
-    //class OutputNeuron
-    //{
-    //    public float Activation
-    //    {
-    //        get { return activations[activations.Count - 1]; }
-    //        set { activations.Add(value); }
-    //    }
-    //    List<float> activations = new List<float>();
-    //}
-
-
+        static private Dictionary<TrainingFunction, List<int[]>> dictionary = new Dictionary<TrainingFunction, List<int[]>>
+        {
+            {TrainingFunction.XOR, XOR},
+            {TrainingFunction.OR, OR},
+            {TrainingFunction.AND, AND},
+        };
+    }
 
 }
