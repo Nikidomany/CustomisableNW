@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
@@ -6,23 +7,19 @@ namespace CustomisableNW
 {
     public partial class MainForm
     {
-        public float MaxWeightsRandomize { get {return maxWeightsRandomize;} }
-        public float MinWeightsRandomize { get { return minWeightsRandomize; } }
+        Net net;
 
-
-        public string TrainFunction { get => trainFunction;}
-
-        string trainFunction;
+        TrainingFunction trainingFunction;
 
         public Button runButton;
-
+        Button setButton;
 
         List<Label> tableLabels = new List<Label>();
 
         Panel settingsPanel = new Panel();
 
         public int hiddenLayersNum = 1;
-        public List<int> neuronsPerHiddenLayer = new List<int> { 3 };
+        public List<int> neuronsPerLayer = new List<int> { 2, 3, 1 };
         
         List<NumericUpDown> NUDList = new List<NumericUpDown>();
 
@@ -53,8 +50,8 @@ namespace CustomisableNW
                 TextAlign = ContentAlignment.MiddleCenter,
                 Size = new Size(settingsPanel.Width, 40),
                 Font = new Font(font, 22),
+                Location = new Point(settingsPanel.Width / 2 - 255)
             };
-            lab1.Location = new Point(settingsPanel.Width / 2 - lab1.Width / 2);
             settingsPanel.Controls.Add(lab1);
 
 
@@ -85,10 +82,11 @@ namespace CustomisableNW
                 for (int i = 0; i < 4; i++)     // visualization/hiding NUDs
                     NUDList[i].Visible = (i <= hiddenlayersNUD.Value - 1) ? true : false;
 
-                neuronsPerHiddenLayer = new List<int>();  
+                neuronsPerLayer = new List<int> { 2}; // 2 - input neurons 
                 for (int i = 0; i < hiddenlayersNUD.Value; i++) // recording actual neurons number per layer
-                    neuronsPerHiddenLayer.Add((int)NUDList[i].Value); 
-                
+                    neuronsPerLayer.Add((int)NUDList[i].Value);
+                neuronsPerLayer.Add(1); //  - output neuron
+
                 Drawing(); // drawing scheme according to updated data 
             };
             settingsPanel.Controls.Add(hiddenlayersNUD);
@@ -121,7 +119,7 @@ namespace CustomisableNW
                 NUD.ValueChanged += (o, e) =>
                 {
 
-                    neuronsPerHiddenLayer[(int)NUD.Tag] = (int)NUD.Value;
+                    neuronsPerLayer[(int)NUD.Tag+1] = (int)NUD.Value;
                     Drawing();
                 };
                 NUDList.Add(NUD);
@@ -297,7 +295,7 @@ namespace CustomisableNW
             settingsPanel.Controls.Add(trainingFunctionCB);
 
             // setButton
-            Button setButton = new Button
+            setButton = new Button
             {
                 Text = "SET",
                 Size = new Size(100, 50),
@@ -316,14 +314,14 @@ namespace CustomisableNW
                             settingsPanel.Controls[i].Enabled = (i < 20) ? false : true;
                         setButton.Text = "RESET";
                         lab10.ForeColor = lab9.BackColor;
-                        trainFunction = trainingFunctionCB.Text;
-                        for (int i = 0; i < 8; i++)
-                        {
-                            tableLabels[i].Text = i < 4 ?
-                            $"({TrainSet.Input(i)[0]};{TrainSet.Input(i)[1]})" :
-                            $"{TrainSet.Output(trainFunction, i - 4)}";
-                        }                        
-                        Net web = new Net(this); // создаём новую сеть и передаём в неё все параметры
+
+                        Enum.TryParse(trainingFunctionCB.SelectedItem.ToString(), out trainingFunction);
+                        
+                        UpdateTrainingDataTable();    
+                        net = new Net(neuronsPerLayer,learningRate, moment, maxWeightsRandomize, minWeightsRandomize, TrainingSet.GetTrainingSet(trainingFunction)); // создаём новую сеть и передаём в неё все параметры
+                        
+                        PrintWeights();
+                        PrintActivations();
                     }
                     else if (setButton.Text == "RESET")
                     {
@@ -610,7 +608,15 @@ namespace CustomisableNW
             _lab2.Enabled = true;
         }
         
-
+        void UpdateTrainingDataTable()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                tableLabels[i].Text = i < 4 ?
+                $"({TrainingSet.GetTrainingSet(trainingFunction)[i][0]};{TrainingSet.GetTrainingSet(trainingFunction)[i][1]})" :
+                $"{TrainingSet.GetTrainingSet(trainingFunction)[i - 4][2]}";
+            }
+        }
 
     }
 }

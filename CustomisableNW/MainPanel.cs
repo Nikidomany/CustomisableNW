@@ -18,23 +18,29 @@ namespace CustomisableNW
 
         
 
-        Panel mainPanel = new Panel();
-        MenuStrip menuStrip = new MenuStrip();
-        StatusStrip statusStrip = new StatusStrip();
+        Panel mainPanel;
+        MenuStrip menuStrip;
+        StatusStrip statusStrip;
 
         string font = "Arial";
 
         void MainPanelGraphics()
         {
             // mainPanel settings
-            mainPanel.Size = new Size(this.Width * 2 / 3, this.ClientSize.Height - statusStrip.Height);
-            mainPanel.Dock = DockStyle.Right;
-            mainPanel.BorderStyle = BorderStyle.Fixed3D;
-            mainPanel.Visible = false;
+            mainPanel = new Panel
+            {
+                Size = new Size(this.Width * 2 / 3, this.ClientSize.Height - 22),
+                Dock = DockStyle.Right,
+                BorderStyle = BorderStyle.Fixed3D,
+                Visible = false
+            };
             Controls.Add(mainPanel);
 
             // menuStrip settings
-            menuStrip.Dock = DockStyle.Top;
+            menuStrip = new MenuStrip
+            {
+                Dock = DockStyle.Top
+            };
 
             //вывод численных данных 
             ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("Calculations");
@@ -64,8 +70,9 @@ namespace CustomisableNW
                 diagramPanel.Visible = false;
                 dataPanel.Visible = false;
                 schemePanel.Visible = true;
-                //Drawing1();
                 Drawing();
+                if (setButton.Text == "RESET") // КОСТЫЛЬ!!!
+                    UpdateNeuronLabels();
             };
             menuStrip.Items.Add(toolStripMenuItem3);
 
@@ -74,15 +81,19 @@ namespace CustomisableNW
             toolStripMenuItem4.Click += (o, e) =>
             {
                 string text = "Разработка данного приложения\nцеликом и полностью лежит\nна плечах IlyaProgrammer\n ВО СВЁМ ВИНОВАТ ОН!!!!!!.";
-                MessageBox.Show(text);
+                string caption = "Информация к размышлению";
+                MessageBox.Show(text,caption);
             };
             menuStrip.Items.Add(toolStripMenuItem4);
 
             mainPanel.Controls.Add(menuStrip);
 
             // statusStrip settings
-            statusStrip.Dock = DockStyle.Bottom;
-            statusStrip.BackColor = Color.Red;
+            statusStrip = new StatusStrip
+            {
+                Dock = DockStyle.Bottom,
+                BackColor = Color.Red
+            };
             mainPanel.Controls.Add(statusStrip);
 
 
@@ -92,36 +103,5 @@ namespace CustomisableNW
 
         }
 
-        //void PanelVisualizer()
-        //{
-        //    List<Panel> panels = new List<Panel>
-        //    {
-        //        dataPanel,
-        //        schemePanel,
-        //        diagramPanel
-        //    };
-        //    List<ToolStripMenuItem> toolStripMenuItems = new List<ToolStripMenuItem>();
-        //    foreach (ToolStripMenuItem toolStripMenuItem in menuStrip.Items)
-        //    {
-        //        toolStripMenuItems.Add(toolStripMenuItem);
-        //    }
-
-
-        //    for(int i = 0; i < panels.Count; i++)
-        //    {
-        //        if ()
-        //        {
-        //            //item подкрасить
-        //            // панель визуализировать
-        //        }
-        //        else
-        //        {
-        //            //item обесцветить
-        //            //панель спрятать
-        //        }
-        //    }
-
-
-        //}
     }
 }

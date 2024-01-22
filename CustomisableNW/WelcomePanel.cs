@@ -7,9 +7,9 @@ namespace CustomisableNW
     // Welcome panel graphics
     public partial class MainForm : Form
     {
-        private Panel welcomePanel = new Panel();
-        private Label welcomelabel = new Label();
-        private Button buttonStart = new Button();
+        private Panel welcomePanel;
+        private Label welcomelabel;
+        private Button buttonStart;
 
         public MainForm()
         {
@@ -33,30 +33,39 @@ namespace CustomisableNW
         void WelcomePanelGraphics()
         {
             // welcomePanel. settings
-            welcomePanel.Dock = DockStyle.Fill;
             string picturePath = @"C:\Users\Никита\Desktop\C#\NeuroWebs\CustomisableNW\CustomisableNW\Pictures\WelcomePicture.png";
-            welcomePanel.BackgroundImage = Image.FromFile(picturePath);
+            welcomePanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackgroundImage = Image.FromFile(picturePath)
+            };
             Controls.Add(welcomePanel);
 
             // label settings
-            welcomelabel.Text = "Super Intelligent\nNeuro Net\nUltra Max Pro 5000+";
-            welcomelabel.Font = new Font("Arial", 50);
-            welcomelabel.BackColor = Color.Transparent;
-            welcomelabel.Visible = false;
-            welcomelabel.TextAlign = ContentAlignment.MiddleCenter;
-            welcomelabel.Width = welcomePanel.Width;
-            welcomelabel.Height = 250;
-            welcomelabel.Location = new Point(0, welcomePanel.Height * 1 / 10);
+            welcomelabel = new Label
+            {
+                Text = "Super Intelligent\nNeuro Net\nUltra Max Pro 5000+",
+                Font = new Font("Arial", 50),
+                BackColor = Color.Transparent,
+                Visible = false,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Width = welcomePanel.Width,
+                Height = 250,
+                Location = new Point(0, welcomePanel.Height * 1 / 10)
+            };
             welcomePanel.Controls.Add(welcomelabel);
 
             // button settings
-            buttonStart.Visible = false;
-            buttonStart.Enabled = false;
-            buttonStart.BackColor = Color.LightGray;
-            welcomelabel.ForeColor = Color.FromArgb(255, 255, 255);
-            buttonStart.Font = new Font("Arial", welcomePanel.Width / 60);
-            buttonStart.Size = new Size(welcomePanel.Width * 1 / 10, welcomePanel.Height * 1 / 10);
-            buttonStart.Location = new Point(welcomePanel.Width / 2 - buttonStart.Width / 2, welcomePanel.Height * 5 / 10);
+            buttonStart = new Button
+            {
+                Visible = false,
+                Enabled = false,
+                BackColor = Color.LightGray,
+                ForeColor = Color.FromArgb(255, 255, 255),
+                Font = new Font("Arial", welcomePanel.Width / 60),
+                Size = new Size(welcomePanel.Width * 1 / 10, welcomePanel.Height * 1 / 10),
+                Location = new Point(welcomePanel.Width / 2 - 150, welcomePanel.Height * 5 / 10)
+            };
             buttonStart.MouseEnter += (o, e) => buttonStart.BackColor = Color.FromArgb(0, 50, 120);
             buttonStart.MouseLeave += (o, e) => buttonStart.BackColor = Color.LightGray;
             buttonStart.Click += (o, e) =>
