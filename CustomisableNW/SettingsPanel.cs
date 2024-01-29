@@ -14,6 +14,9 @@ namespace CustomisableNW
         public Button runButton;
         Button setButton;
 
+        bool[] selectedSetsList = new bool[] 
+        {true, true, true, true};
+
         List<Label> tableLabels = new List<Label>();
 
         Panel settingsPanel = new Panel();
@@ -25,8 +28,8 @@ namespace CustomisableNW
 
         public float maxWeightsRandomize = 1,
               minWeightsRandomize = -1,
-              learningRate = 0.5F,
-              moment = 0.5F;
+              learningRate = 0.7F,
+              moment = 0.3F;
 
         //settingsPanel settings
         void SettingsPanelGraphics()
@@ -259,7 +262,7 @@ namespace CustomisableNW
                 TextAlign = HorizontalAlignment.Center,
                 Minimum = -10,
                 Maximum = 10,
-                Value = 0.5M,
+                Value = 0.3M,
                 Increment = 0.05M,
                 DecimalPlaces = 2
             };
@@ -319,7 +322,7 @@ namespace CustomisableNW
                         
                         UpdateTrainingDataTable();    
                         net = new Net(neuronsPerLayer,learningRate, moment, maxWeightsRandomize, minWeightsRandomize, TrainingSet.GetTrainingSet(trainingFunction)); // создаём новую сеть и передаём в неё все параметры
-                        
+
                         PrintWeights();
                         PrintActivations();
                     }
@@ -414,11 +417,13 @@ namespace CustomisableNW
                     {
                         button.Text = "OFF";
                         button.BackColor = Color.IndianRed;
+                        selectedSetsList[i] = false;
                     }
                     else if (button.Text == "OFF")
                     {
                         button.Text = "ON";
                         button.BackColor = Color.LightGreen;
+                        selectedSetsList[i] = true;
                     }
                 };
                 settingsPanel.Controls.Add(button);
@@ -523,6 +528,15 @@ namespace CustomisableNW
                 Font = new Font(font, 18),
                 Size = new Size(150, runButton.Height),
                 Location = new Point(settingsPanel.Width * 3/4 - 75 , runButton.Location.Y)
+            };
+            plusIterationButton.Click += (o, e) =>
+            {
+                net.PlusIteration(selectedSetsList);
+                PrintWeightsGradient();
+                PrintWeightsDelta();
+                PrintNeurosDelta();
+                PrintWeights();
+                PrintActivations();
             };
             settingsPanel.Controls.Add(plusIterationButton);
 

@@ -26,7 +26,7 @@ namespace CustomisableNW
             {
                 Dock = DockStyle.Fill,
                 Multiline = true,
-                Font = new Font("Arial", 15),
+                Font = new Font("Arial", 13),
                 ScrollBars = ScrollBars.Vertical
             };
             dataPanel.Controls.Add(dataTextBox);
@@ -72,12 +72,11 @@ namespace CustomisableNW
 
             dataTextBox.Text += result;
         }
-
         private void PrintWeights()
         {
             string result = "";
 
-            result += "\r\n\r\nWeights randomizing:";
+            result += "\r\n\r\nWeights:";
 
             for(int i = 1; i < net.Neurons.Count; i++)
             {
@@ -93,7 +92,7 @@ namespace CustomisableNW
 
                     for(int k = 0; k < net.Neurons[i].Count; k++)
                     {
-                        float weightValue = net.Neurons[i][k].Weights[j].Value;
+                        double weightValue = Math.Round(net.Neurons[i][k].Weights[j].Value,2);
                         string sign = (weightValue < 0 ? "" : " ");
 
                         result += $" {sign}{weightValue} ";
@@ -105,6 +104,110 @@ namespace CustomisableNW
 
             dataTextBox.Text += result;
         } 
+        private void PrintNeurosDelta()
+        {
+            string result = "\r\n\r\nNeurons delta:";
+
+            result += "\r\n             ";
+            for (int i = 0; i < net.Neurons.Count; i++)
+            {
+                string layerName = (i == 0 ? "Inp" : (i == net.Neurons.Count - 1 ? " Out" : $"  {i}-H "));
+                result += $"  {layerName} ";
+            }
+
+            int maxNeuronsQuantity = 0;
+            for (int i = 0; i < net.Neurons.Count; i++)
+                if (net.Neurons[i].Count > maxNeuronsQuantity)
+                    maxNeuronsQuantity = net.Neurons[i].Count;
+
+            for (int j = 0; j < maxNeuronsQuantity; j++)
+            {
+                result += $"\r\n        N{j} ";
+
+                for (int i = 0; i < net.Neurons.Count; i++)
+                {
+                    bool isExist = j < net.Neurons[i].Count;
+                    if (!isExist)
+                    {
+                        result += $"    -     ";
+                        continue;
+                    }
+
+                    float deltaValue = net.Neurons[i][j].Delta;
+                    string deltaString = Math.Round(deltaValue, 2).ToString();
+
+                    result += $"   {deltaString}  ";
+                }
+
+            }
+
+            dataTextBox.Text += result;
+        }
+        private void PrintWeightsGradient()
+        {
+            string result = "";
+
+            result += "\r\n\r\nWeights GRADients:";
+
+            for (int i = 1; i < net.Neurons.Count; i++)
+            {
+                result += $"\r\n   • {(i == 1 ? "input layer - 1" : (i == net.Neurons.Count - 1 ? $"{i - 1} layer - output" : $"{i - 1} layer - {i}"))} layer";
+                result += "\r\n           ";
+
+                for (int x = 0; x < net.Neurons[i].Count; x++)
+                    result += $"     N{i}{x}  ";
+
+                for (int j = 0; j < net.Neurons[i - 1].Count; j++)
+                {
+                    result += $"\r\n        N{i - 1}{j}";
+                    for (int k = 0; k < net.Neurons[i].Count; k++)
+                    {
+                        float gradientValue = net.Neurons[i][k].Weights[j].Gradient;
+                        string sign = (gradientValue < 0 ? "" : " ");
+
+                        result += $" {sign}{Math.Round(gradientValue,2)} ";
+                    }
+
+                }
+
+            }
+
+            dataTextBox.Text += result;
+        }
+        private void PrintWeightsDelta()
+        {
+            string result = "";
+
+            result += "\r\n\r\nWeights delta:";
+
+            for (int i = 1; i < net.Neurons.Count; i++)
+            {
+                result += $"\r\n   • {(i == 1 ? "input layer - 1" : (i == net.Neurons.Count - 1 ? $"{i - 1} layer - output" : $"{i - 1} layer - {i}"))} layer";
+                result += "\r\n           ";
+
+                for (int x = 0; x < net.Neurons[i].Count; x++)
+                    result += $"     N{i}{x}  ";
+
+                for (int j = 0; j < net.Neurons[i - 1].Count; j++)
+                {
+                    result += $"\r\n        N{i - 1}{j}";
+                    for (int k = 0; k < net.Neurons[i].Count; k++)
+                    {
+                        float deltaValue = net.Neurons[i][k].Weights[j].Delta;
+                        string sign = (deltaValue < 0 ? "" : " ");
+
+                        result += $" {sign}{Math.Round(deltaValue, 2)} ";
+                    }
+
+                }
+
+            }
+
+            dataTextBox.Text += result;
+        }
+
+
+
 
     }
 
