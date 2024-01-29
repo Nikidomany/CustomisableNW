@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Text;
 
 namespace CustomisableNW
 {
@@ -205,7 +206,15 @@ namespace CustomisableNW
 
             dataTextBox.Text += result;
         }
+        private void PrintError()
+        {
+            StringBuilder result = new StringBuilder("\r\n");
+            double error = Math.Round(net.ErrorList[net.ErrorList.Count - 1], 3);
 
+            result.Append($"ERROR: {error}\r\n");
+
+            dataTextBox.Text += result;
+        }
 
 
 

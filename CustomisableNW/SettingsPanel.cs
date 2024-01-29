@@ -325,6 +325,7 @@ namespace CustomisableNW
 
                         PrintWeights();
                         PrintActivations();
+                        PrintError();
                     }
                     else if (setButton.Text == "RESET")
                     {
@@ -537,6 +538,7 @@ namespace CustomisableNW
                 PrintNeurosDelta();
                 PrintWeights();
                 PrintActivations();
+                PrintError();
             };
             settingsPanel.Controls.Add(plusIterationButton);
 

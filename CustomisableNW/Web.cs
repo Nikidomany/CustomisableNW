@@ -33,8 +33,11 @@ namespace CustomisableNW
 
         private List<int[]> trainingSet;
 
+        public List<float> ErrorList { get { return errorList; } }
+        private List<float> errorList = new List<float>();
+
         public int TrainingSetNumber { get { return trainingSetNumber; } }
-        private int trainingSetNumber = 2;
+        private int trainingSetNumber = 0;
 
         public List<List<Neuron>> Neurons { get { return neurons; } } 
         private List<List<Neuron>> neurons = new List<List<Neuron>>();
@@ -52,7 +55,7 @@ namespace CustomisableNW
             InitializeNeurons();
             SetInitialNeuronWeights();
             ComputeActivations();
-
+            ComputeError();
         }
 
 
@@ -74,27 +77,16 @@ namespace CustomisableNW
         }
         private void SetInitialNeuronWeights()
         {
-            neurons[1][0].Weights[0].Value = 0.45f;
-            neurons[1][0].Weights[1].Value = -0.12f;
+            Random random = new Random();
 
-            neurons[1][1].Weights[0].Value = 0.78f;
-            neurons[1][1].Weights[1].Value = 0.13f;
-
-            neurons[2][0].Weights[0].Value = 1.5f;
-            neurons[2][0].Weights[1].Value = -2.3f;
-
-
-
-            //Random random = new Random();
-
-            //for (int i = 1; i < layersQuantity; i++)
-            //    for (int j = 0; j < neuronsPerLayer[i]; j++)
-            //        for (int k = 0; k < neurons[i][j].Weights.Count; k++)
-            //        {
-            //            int temp = random.Next((int)(minWeightsRandomization * 100), (int)(maxWeightsRandomization * 100));
-            //            float value = (float)temp / 100;
-            //            neurons[i][j].Weights[k].Value = value;
-            //        }
+            for (int i = 1; i < layersQuantity; i++)
+                for (int j = 0; j < neuronsPerLayer[i]; j++)
+                    for (int k = 0; k < neurons[i][j].Weights.Count; k++)
+                    {
+                        int temp = random.Next((int)(minWeightsRandomization * 100), (int)(maxWeightsRandomization * 100));
+                        float value = (float)temp / 100;
+                        neurons[i][j].Weights[k].Value = value;
+                    }
         }
         private void ComputeActivations()
         {
@@ -185,11 +177,22 @@ namespace CustomisableNW
             }
         }
 
+        private void ComputeError()
+        {
+            float idealOutput = trainingSet[trainingSetNumber][2];
+            float realOutput = neurons[layersQuantity - 1][0].Activation;
+
+            float error = (float)Math.Pow((idealOutput - realOutput), 2);
+
+            errorList.Add(error);
+        }
+
         public void PlusIteration(bool[] xxxx, int iterationQuantity = 1)
         {
             BackPropagationMethod();
             IncrementTrainSetNumber();
             ComputeActivations();
+            ComputeError();
         } // обозвать переменную
         public void PlusEpoch(bool[] xxxx, int epochsQuantity = 1)
         {
