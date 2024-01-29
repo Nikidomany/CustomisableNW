@@ -18,7 +18,7 @@ namespace CustomisableNW
     * 7)
     * 8)
     * 9)
-    * 10) Нейрон смещения (bias) ?
+    * 10)
     */
 
 
@@ -203,7 +203,7 @@ namespace CustomisableNW
 
         private void IncrementTrainSetNumber()
         {
-            if (trainingSetNumber == 4)
+            if (trainingSetNumber == 3)
                 trainingSetNumber = 0;
             else
                 trainingSetNumber++;
