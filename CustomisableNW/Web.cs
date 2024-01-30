@@ -187,14 +187,14 @@ namespace CustomisableNW
             errorList.Add(error);
         }
 
-        public void PlusIteration(bool[] xxxx, int iterationQuantity = 1)
+        public void PlusIteration(bool[] selectedTrainingsets, int iterationQuantity = 1)
         {
             BackPropagationMethod();
             IncrementTrainSetNumber();
             ComputeActivations();
             ComputeError();
         } // обозвать переменную
-        public void PlusEpoch(bool[] xxxx, int epochsQuantity = 1)
+        public void PlusEpoch(bool[] selectedTrainingsets, int epochsQuantity = 1)
         {
 
         } // не готовы

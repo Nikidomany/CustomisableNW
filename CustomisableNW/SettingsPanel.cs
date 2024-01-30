@@ -308,7 +308,6 @@ namespace CustomisableNW
             setButton.Location = new Point((settingsPanel.Width - setButton.Width) / 2, lab9.Location.Y + lab9.Height + 50);
             setButton.Click += (o, e) =>
             {
-
                 if (trainingFunctionCB.Text != "")
                 {
                     if(setButton.Text == "SET")
@@ -323,6 +322,7 @@ namespace CustomisableNW
                         UpdateTrainingDataTable();    
                         net = new Net(neuronsPerLayer,learningRate, moment, maxWeightsRandomize, minWeightsRandomize, TrainingSet.GetTrainingSet(trainingFunction)); // создаём новую сеть и передаём в неё все параметры
 
+                        
                         PrintWeights();
                         PrintActivations();
                         PrintError();
@@ -410,7 +410,8 @@ namespace CustomisableNW
                     Text = "ON",
                     BackColor = Color.LightGreen,
                     Size = new Size(tablePanel.Width / 4, tablePanel.Width / 6),
-                    Location = new Point(tablePanel.Location.X + tablePanel.Width/4* i, tablePanel.Location.Y + tablePanel.Height)
+                    Location = new Point(tablePanel.Location.X + tablePanel.Width/4* i, tablePanel.Location.Y + tablePanel.Height),
+                    Tag = i
                 };
                 button.Click += (o, e) =>
                 {
@@ -418,13 +419,13 @@ namespace CustomisableNW
                     {
                         button.Text = "OFF";
                         button.BackColor = Color.IndianRed;
-                        selectedSetsList[i] = false;
+                        selectedSetsList[(int)button.Tag] = false;
                     }
                     else if (button.Text == "OFF")
                     {
                         button.Text = "ON";
                         button.BackColor = Color.LightGreen;
-                        selectedSetsList[i] = true;
+                        selectedSetsList[(int)button.Tag] = true;
                     }
                 };
                 settingsPanel.Controls.Add(button);

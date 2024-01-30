@@ -48,7 +48,7 @@ namespace CustomisableNW
                 dataPanel.Visible = false;
                 schemePanel.Visible = false;
                 diagramPanel.Visible = true;
-                DiagramDrawing();
+                DrawDiagram();
             };
             menuStrip.Items.Add(toolStripMenuItem2);
 

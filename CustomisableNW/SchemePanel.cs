@@ -136,6 +136,19 @@ namespace CustomisableNW
                     schemePB.Controls.Add(label);
                 }
             }
+
+
+            Label CreateNeuronLabel(int x, int y)
+            {
+                return new Label
+                {
+                    Text = "-",
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Font = new Font(font, 11),
+                    Size = new Size(40, 14),
+                    Location = new Point(x - 19, y + 23)
+                };
+            }
         }
         public void UpdateNeuronLabels()
         {
@@ -144,17 +157,7 @@ namespace CustomisableNW
                     neuronLabels[i][j].Text = Math.Round(net.Neurons[i][j].Activation,2).ToString();
         }
 
-        private Label CreateNeuronLabel(int x, int y)
-        {
-            return new Label
-            {
-                Text = "-",
-                TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font(font, 11),
-                Size = new Size(40, 14),
-                Location = new Point(x - 19, y + 23)
-            };
-        }
+        
 
     }
 
