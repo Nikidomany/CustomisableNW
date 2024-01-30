@@ -6,18 +6,7 @@ using System;
 namespace CustomisableNW
 {
     public partial class MainForm
-    {
-        public PictureBox Scheme { get => schemePB; }
-        public PictureBox Diagram { get => diagramPB; }
-        public string TextBox
-        {
-            get => dataTextBox.Text;
-            set => dataTextBox.Text = value;
-        }
-
-
-        
-
+    {  
         Panel mainPanel;
         MenuStrip menuStrip;
         StatusStrip statusStrip;

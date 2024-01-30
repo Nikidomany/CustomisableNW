@@ -20,7 +20,7 @@ namespace CustomisableNW
         private List<List<Label>> activationLabelsList = new List<List<Label>>();
 
 
-        // графическое представление сети
+        
         void SchemePanelGraphics()
         {
 
@@ -38,7 +38,8 @@ namespace CustomisableNW
             schemePB = new PictureBox
             {
                 Size = new Size(schemePanel.Width, schemePanel.Height),
-                BorderStyle = BorderStyle.Fixed3D
+                BorderStyle = BorderStyle.Fixed3D, 
+                BackColor = Color.White
             };
             schemePanel.Controls.Add(schemePB);
 
@@ -82,7 +83,7 @@ namespace CustomisableNW
             NeuronsCoordinatesComputing();
 
             Graphics scheme = schemePB.CreateGraphics();
-            scheme.Clear(schemePanel.BackColor);
+            scheme.Clear(Color.White);
             
             Pen inputOrOutputNeuronPen = new Pen(Color.Red, 2);
             Pen hiddenNeuronPen = new Pen(Color.Blue, 2);
@@ -140,7 +141,7 @@ namespace CustomisableNW
         {
             for(int i = 0; i < neuronLabels.Count; i++)
                 for(int j = 0; j < neuronLabels[i].Count; j++)
-                    neuronLabels[i][j].Text = net.Neurons[i][j].Activation.ToString();
+                    neuronLabels[i][j].Text = Math.Round(net.Neurons[i][j].Activation,2).ToString();
         }
 
         private Label CreateNeuronLabel(int x, int y)
@@ -149,7 +150,7 @@ namespace CustomisableNW
             {
                 Text = "-",
                 TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font(font, 8),
+                Font = new Font(font, 11),
                 Size = new Size(40, 14),
                 Location = new Point(x - 19, y + 23)
             };
