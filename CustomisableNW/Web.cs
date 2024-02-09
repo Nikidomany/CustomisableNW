@@ -189,24 +189,39 @@ namespace CustomisableNW
 
         public void PlusIteration(bool[] selectedTrainingsets, int iterationQuantity = 1)
         {
-            BackPropagationMethod();
-            IncrementTrainSetNumber();
-            ComputeActivations();
-            ComputeError();
-        } // обозвать переменную
-        public void PlusEpoch(bool[] selectedTrainingsets, int epochsQuantity = 1)
+            for(int i = 0; i < iterationQuantity; i++)
+            {
+                BackPropagationMethod();
+                IncrementTrainSetNumber(selectedTrainingsets);
+                ComputeActivations();
+                ComputeError();
+            }
+        }
+        public void PlusEpoch(bool[] selectedTrainingsets)
         {
+            bool isThereAValidTrainningSet = !selectedTrainingsets.All(x => x == false);
 
-        } // не готовы
+            if(isThereAValidTrainningSet)
+            while(trainingSetNumber != 0)
+            {
+                    PlusIteration(selectedTrainingsets);
+            }
+        } 
 
 
 
-        private void IncrementTrainSetNumber()
+        private void IncrementTrainSetNumber(bool[] selectedTrainingsets)
         {
             if (trainingSetNumber == 3)
                 trainingSetNumber = 0;
             else
                 trainingSetNumber++;
+
+            bool isItValidTrainingSet = !selectedTrainingsets[trainingSetNumber];
+            bool isThereAValidTrainningSet = !selectedTrainingsets.All(x => x == false);
+
+            if (isItValidTrainingSet && isThereAValidTrainningSet)
+                IncrementTrainSetNumber(selectedTrainingsets);
         }
     }
 
