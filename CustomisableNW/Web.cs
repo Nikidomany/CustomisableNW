@@ -187,15 +187,13 @@ namespace CustomisableNW
             errorList.Add(error);
         }
 
-        public void PlusIteration(bool[] selectedTrainingsets, int iterationQuantity = 1)
+        public void PlusIteration(bool[] selectedTrainingsets)
         {
-            for(int i = 0; i < iterationQuantity; i++)
-            {
-                BackPropagationMethod();
-                IncrementTrainSetNumber(selectedTrainingsets);
-                ComputeActivations();
-                ComputeError();
-            }
+            BackPropagationMethod();
+            IncrementTrainSetNumber(selectedTrainingsets);
+            ComputeActivations();
+            ComputeError();
+         
         }
         public void PlusEpoch(bool[] selectedTrainingsets)
         {
