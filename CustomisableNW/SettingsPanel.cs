@@ -511,6 +511,19 @@ namespace CustomisableNW
                 Location = new Point(iterationsNUD.Location.X + iterationsNUD.Width, iterationsNUD.Location.Y)
             };
             this.runButton = runButton;
+            runButton.Click += (s, e) =>
+            {
+                for(int i = 0; i < iterationsNUD.Value; i++)
+                {
+                    net.PlusIteration(selectedSetsList);
+                    PrintWeightsGradient();
+                    PrintWeightsDelta();
+                    PrintNeurosDelta();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+            };
             settingsPanel.Controls.Add(runButton);
 
             // endButton
