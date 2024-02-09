@@ -1,12 +1,10 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System;
 
 namespace CustomisableNW
 {
     public partial class MainForm
-    {  
+    {
         Panel mainPanel;
         MenuStrip menuStrip;
         StatusStrip statusStrip;
@@ -71,7 +69,7 @@ namespace CustomisableNW
             {
                 string text = "Разработка данного приложения\nцеликом и полностью лежит\nна плечах IlyaProgrammer\n ВО СВЁМ ВИНОВАТ ОН!!!!!!.";
                 string caption = "Информация к размышлению";
-                MessageBox.Show(text,caption);
+                MessageBox.Show(text, caption);
             };
             menuStrip.Items.Add(toolStripMenuItem4);
 

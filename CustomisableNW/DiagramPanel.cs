@@ -78,7 +78,7 @@ namespace CustomisableNW
                 int xInterval = diagramPB.Width * 18 / 20 / 50,
                     yInterval = diagramPB.Height * 18 / 20 / 20;
 
-                for(int i = 0; i < 11; i++)
+                for (int i = 0; i < 11; i++)
                 {
                     Label scaleLabel = new Label
                     {
@@ -95,7 +95,7 @@ namespace CustomisableNW
                     diagram.DrawLine(axisPen, scaleLinesStartPosition.X, scaleLinesStartPosition.Y + yInterval * i + 1, scaleLinesStartPosition.X + 9, scaleLinesStartPosition.Y + yInterval * i);
                 }
 
-                for(int i = 0; i < 21; i++)
+                for (int i = 0; i < 21; i++)
                 {
                     Label scaleLabel = new Label
                     {
@@ -113,10 +113,10 @@ namespace CustomisableNW
 
                 }
 
-                for(int i = 1; i < 49; i++)
+                for (int i = 1; i < 49; i++)
                 {
-                    int x1 = diagramPanel.Width* 2 / 20 + xInterval * i,
-                        y1 = diagramPanel.Height/2 - (i % 5 == 0 ? 6 : 3),
+                    int x1 = diagramPanel.Width * 2 / 20 + xInterval * i,
+                        y1 = diagramPanel.Height / 2 - (i % 5 == 0 ? 6 : 3),
                         x2 = x1,
                         y2 = diagramPanel.Height / 2 + (i % 5 == 0 ? 6 : 3);
 

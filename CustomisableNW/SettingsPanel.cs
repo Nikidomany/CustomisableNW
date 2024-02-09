@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
 
 namespace CustomisableNW
 {
@@ -14,7 +14,7 @@ namespace CustomisableNW
         public Button runButton;
         Button setButton;
 
-        bool[] selectedSetsList = new bool[] 
+        bool[] selectedSetsList = new bool[]
         {true, true, true, true};
 
         List<Label> tableLabels = new List<Label>();
@@ -23,7 +23,7 @@ namespace CustomisableNW
 
         public int hiddenLayersNum = 1;
         public List<int> neuronsPerLayer = new List<int> { 2, 3, 1 };
-        
+
         List<NumericUpDown> NUDList = new List<NumericUpDown>();
 
         public float maxWeightsRandomize = 1,
@@ -41,8 +41,8 @@ namespace CustomisableNW
             settingsPanel.Visible = false;
             this.Controls.Add(settingsPanel);
 
-            
-                
+
+
 
 
 
@@ -85,7 +85,7 @@ namespace CustomisableNW
                 for (int i = 0; i < 4; i++)     // visualization/hiding NUDs
                     NUDList[i].Visible = (i <= hiddenlayersNUD.Value - 1) ? true : false;
 
-                neuronsPerLayer = new List<int> { 2}; // 2 - input neurons 
+                neuronsPerLayer = new List<int> { 2 }; // 2 - input neurons 
                 for (int i = 0; i < hiddenlayersNUD.Value; i++) // recording actual neurons number per layer
                     neuronsPerLayer.Add((int)NUDList[i].Value);
                 neuronsPerLayer.Add(1); //  - output neuron
@@ -122,7 +122,7 @@ namespace CustomisableNW
                 NUD.ValueChanged += (o, e) =>
                 {
 
-                    neuronsPerLayer[(int)NUD.Tag+1] = (int)NUD.Value;
+                    neuronsPerLayer[(int)NUD.Tag + 1] = (int)NUD.Value;
                     Drawing();
                 };
                 NUDList.Add(NUD);
@@ -280,7 +280,7 @@ namespace CustomisableNW
 
             };
             settingsPanel.Controls.Add(lab10);
-            
+
             // ComboBox training function
             ComboBox trainingFunctionCB = new ComboBox
             {
@@ -310,7 +310,7 @@ namespace CustomisableNW
             {
                 if (trainingFunctionCB.Text != "")
                 {
-                    if(setButton.Text == "SET")
+                    if (setButton.Text == "SET")
                     {
                         for (int i = 0; i < settingsPanel.Controls.Count; i++)
                             settingsPanel.Controls[i].Enabled = (i < 20) ? false : true;
@@ -318,18 +318,18 @@ namespace CustomisableNW
                         lab10.ForeColor = lab9.BackColor;
 
                         Enum.TryParse(trainingFunctionCB.SelectedItem.ToString(), out trainingFunction);
-                        
-                        UpdateTrainingDataTable();    
-                        net = new Net(neuronsPerLayer,learningRate, moment, maxWeightsRandomize, minWeightsRandomize, TrainingSet.GetTrainingSet(trainingFunction)); // создаём новую сеть и передаём в неё все параметры
 
-                        
+                        UpdateTrainingDataTable();
+                        net = new Net(neuronsPerLayer, learningRate, moment, maxWeightsRandomize, minWeightsRandomize, TrainingSet.GetTrainingSet(trainingFunction)); // создаём новую сеть и передаём в неё все параметры
+
+
                         PrintWeights();
                         PrintActivations();
                         PrintError();
                     }
                     else if (setButton.Text == "RESET")
                     {
-                        for (int i = 0; i < settingsPanel.Controls.Count-2; i++)
+                        for (int i = 0; i < settingsPanel.Controls.Count - 2; i++)
                             settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
                         for (int i = 0; i < 8; i++)
                         {
@@ -349,7 +349,7 @@ namespace CustomisableNW
             Panel tablePanel = new Panel
             {
                 Location = new Point(settingsPanel.Width / 4, setButton.Location.Y + setButton.Height + 40),
-                Size = new Size(settingsPanel.Width/2, settingsPanel.Width / 6),
+                Size = new Size(settingsPanel.Width / 2, settingsPanel.Width / 6),
                 BorderStyle = BorderStyle.FixedSingle
             };
             for (int i = 0; i < 2; i++)
@@ -385,8 +385,8 @@ namespace CustomisableNW
                 Text = "Input:",
                 Font = new Font(font, 15),
                 TextAlign = ContentAlignment.MiddleRight,
-                Size = new Size( 100, tablePanel.Height/2),
-                Location  = new Point(tablePanel.Location.X - 100, tablePanel.Location.Y)
+                Size = new Size(100, tablePanel.Height / 2),
+                Location = new Point(tablePanel.Location.X - 100, tablePanel.Location.Y)
             };
             settingsPanel.Controls.Add(lab11);
 
@@ -397,7 +397,7 @@ namespace CustomisableNW
                 Font = new Font(font, 15),
                 TextAlign = ContentAlignment.MiddleRight,
                 Size = new Size(100, tablePanel.Height / 2),
-                Location = new Point(tablePanel.Location.X - 100, tablePanel.Location.Y + tablePanel.Height/2)
+                Location = new Point(tablePanel.Location.X - 100, tablePanel.Location.Y + tablePanel.Height / 2)
             };
             settingsPanel.Controls.Add(lab12);
 
@@ -410,7 +410,7 @@ namespace CustomisableNW
                     Text = "ON",
                     BackColor = Color.LightGreen,
                     Size = new Size(tablePanel.Width / 4, tablePanel.Width / 6),
-                    Location = new Point(tablePanel.Location.X + tablePanel.Width/4* i, tablePanel.Location.Y + tablePanel.Height),
+                    Location = new Point(tablePanel.Location.X + tablePanel.Width / 4 * i, tablePanel.Location.Y + tablePanel.Height),
                     Tag = i
                 };
                 button.Click += (o, e) =>
@@ -473,7 +473,7 @@ namespace CustomisableNW
                 Size = new Size(100, 30),
                 Font = new Font(font, 15),
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(settingsPanel.Width/4 - 50, epochsLab.Location.Y + epochsLab.Height + 20)
+                Location = new Point(settingsPanel.Width / 4 - 50, epochsLab.Location.Y + epochsLab.Height + 20)
             };
             settingsPanel.Controls.Add(lab13);
 
@@ -484,7 +484,7 @@ namespace CustomisableNW
                 Size = new Size(120, 30),
                 Font = new Font(font, 15),
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(settingsPanel.Width * 3/4 - 60, epochsLab.Location.Y + epochsLab.Height + 20)
+                Location = new Point(settingsPanel.Width * 3 / 4 - 60, epochsLab.Location.Y + epochsLab.Height + 20)
             };
             settingsPanel.Controls.Add(lab14);
 
@@ -498,7 +498,7 @@ namespace CustomisableNW
                 Width = 60,
                 TextAlign = HorizontalAlignment.Center,
                 Font = new Font(font, 20),
-                Location = new Point( 55, lab13.Location.Y + lab13.Height + 20)
+                Location = new Point(55, lab13.Location.Y + lab13.Height + 20)
             };
             settingsPanel.Controls.Add(iterationsNUD);
 
@@ -513,7 +513,7 @@ namespace CustomisableNW
             this.runButton = runButton;
             runButton.Click += (s, e) =>
             {
-                for(int i = 0; i < iterationsNUD.Value; i++)
+                for (int i = 0; i < iterationsNUD.Value; i++)
                 {
                     net.PlusIteration(selectedSetsList);
                     PrintWeightsGradient();
@@ -542,7 +542,7 @@ namespace CustomisableNW
                 Text = "+ Iteration",
                 Font = new Font(font, 18),
                 Size = new Size(150, runButton.Height),
-                Location = new Point(settingsPanel.Width * 3/4 - 75 , runButton.Location.Y)
+                Location = new Point(settingsPanel.Width * 3 / 4 - 75, runButton.Location.Y)
             };
             plusIterationButton.Click += (o, e) =>
             {
@@ -593,9 +593,9 @@ namespace CustomisableNW
             // ___Panel2
             Panel _panel2 = new Panel
             {
-                Size = new Size(2,400),
+                Size = new Size(2, 400),
                 BorderStyle = BorderStyle.FixedSingle,
-                Location = new Point(settingsPanel.Width/2, lab13.Location.Y - 5)
+                Location = new Point(settingsPanel.Width / 2, lab13.Location.Y - 5)
             };
             settingsPanel.Controls.Add(_panel2);
 
@@ -620,17 +620,17 @@ namespace CustomisableNW
             settingsPanel.Controls.Add(_lab2);
             setButton.Click += (o, e) =>
             {
-                if(trainingFunctionCB.Text != "")
-                if (setButton.Text == "SET")
-                {
-                    _lab1.Visible = false;
-                    _lab2.Visible = true;
-                }
-                else if(setButton.Text == "RESET")
-                {
-                    _lab1.Visible = true;
-                    _lab2.Visible = false;
-                }
+                if (trainingFunctionCB.Text != "")
+                    if (setButton.Text == "SET")
+                    {
+                        _lab1.Visible = false;
+                        _lab2.Visible = true;
+                    }
+                    else if (setButton.Text == "RESET")
+                    {
+                        _lab1.Visible = true;
+                        _lab2.Visible = false;
+                    }
             };
 
 
@@ -638,7 +638,7 @@ namespace CustomisableNW
                 settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
             _lab2.Enabled = true;
         }
-        
+
         void UpdateTrainingDataTable()
         {
             for (int i = 0; i < 8; i++)
