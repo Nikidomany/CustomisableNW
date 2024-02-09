@@ -564,7 +564,16 @@ namespace CustomisableNW
                 Size = new Size(150, endButton.Height),
                 Location = new Point(settingsPanel.Width * 3 / 4 - 75, endButton.Location.Y)
             };
-            plusEpochButton.Click += (s, e) => net.PlusEpoch(selectedSetsList);
+            plusEpochButton.Click += (s, e) =>
+            {
+                net.PlusIteration(selectedSetsList);
+                PrintWeightsGradient();
+                PrintWeightsDelta();
+                PrintNeurosDelta();
+                PrintWeights();
+                PrintActivations();
+                PrintError();
+            };
             settingsPanel.Controls.Add(plusEpochButton);
 
 
