@@ -204,7 +204,7 @@ namespace CustomisableNW
             if(isThereAValidTrainningSet)
             while(trainingSetNumber != 0)
             {
-                    PlusIteration(selectedTrainingsets);
+                PlusIteration(selectedTrainingsets);
             }
         } 
 

@@ -489,7 +489,7 @@ namespace CustomisableNW
             settingsPanel.Controls.Add(lab14);
 
             // epochsNUD
-            NumericUpDown epochsNUD = new NumericUpDown
+            NumericUpDown iterationsNUD = new NumericUpDown
             {
                 Value = 0,
                 Increment = 1,
@@ -500,15 +500,15 @@ namespace CustomisableNW
                 Font = new Font(font, 20),
                 Location = new Point( 55, lab13.Location.Y + lab13.Height + 20)
             };
-            settingsPanel.Controls.Add(epochsNUD);
+            settingsPanel.Controls.Add(iterationsNUD);
 
             // runButton
             Button runButton = new Button
             {
                 Text = "RUN",
                 Font = new Font(font, 17),
-                Size = new Size(80, epochsNUD.Height),
-                Location = new Point(epochsNUD.Location.X + epochsNUD.Width, epochsNUD.Location.Y)
+                Size = new Size(80, iterationsNUD.Height),
+                Location = new Point(iterationsNUD.Location.X + iterationsNUD.Width, iterationsNUD.Location.Y)
             };
             this.runButton = runButton;
             settingsPanel.Controls.Add(runButton);
@@ -518,8 +518,8 @@ namespace CustomisableNW
             {
                 Text = "END",
                 Font = new Font(font, 17),
-                Size = new Size(epochsNUD.Width + runButton.Width, epochsNUD.Height),
-                Location = new Point(55, epochsNUD.Location.Y + epochsNUD.Height + 10)
+                Size = new Size(iterationsNUD.Width + runButton.Width, iterationsNUD.Height),
+                Location = new Point(55, iterationsNUD.Location.Y + iterationsNUD.Height + 10)
             };
             settingsPanel.Controls.Add(endButton);
 
@@ -551,6 +551,7 @@ namespace CustomisableNW
                 Size = new Size(150, endButton.Height),
                 Location = new Point(settingsPanel.Width * 3 / 4 - 75, endButton.Location.Y)
             };
+            plusEpochButton.Click += (s, e) => net.PlusEpoch(selectedSetsList);
             settingsPanel.Controls.Add(plusEpochButton);
 
 
