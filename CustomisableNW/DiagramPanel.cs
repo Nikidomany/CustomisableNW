@@ -57,7 +57,7 @@ namespace CustomisableNW
                     axisPen,
                     schemePB.Width * 2 / 20,
                     schemePB.Height * 1 / 2,
-                    schemePB.Width * 19 / 20,
+                    schemePB.Width,
                     schemePB.Height * 1 / 2
                     );
 
@@ -113,12 +113,28 @@ namespace CustomisableNW
 
                 }
 
-                for (int i = 1; i < 49; i++)
+                for (int i = 1; i < 51; i++)
                 {
                     int x1 = diagramPanel.Width * 2 / 20 + xInterval * i,
                         y1 = diagramPanel.Height / 2 - (i % 5 == 0 ? 6 : 3),
                         x2 = x1,
                         y2 = diagramPanel.Height / 2 + (i % 5 == 0 ? 6 : 3);
+
+                    if(i % 5 == 0)
+                    {
+                        Label scaleLabel = new Label
+                        {
+                            Text = $"{(double)i}",
+                            TextAlign = ContentAlignment.MiddleCenter,
+                            ForeColor = Color.Black,
+                            BackColor = Color.White,
+                            Font = new Font(font, 12),
+                            Size = new Size(30, 20),
+                            Location = new Point(x2 - 13, y1 + 12)
+                        };
+                        diagramPB.Controls.Add(scaleLabel);
+                    }
+
 
                     diagram.DrawLine(new Pen(Color.Black, (i % 5 == 0 ? (float)2 : 1)), x1, y1, x2, y2);
                 }
