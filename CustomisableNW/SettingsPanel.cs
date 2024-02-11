@@ -320,10 +320,9 @@ namespace CustomisableNW
 
                 if (setButton.Text == "SET")
                 {
-                    RenameSetButton();
                     lab10.ForeColor = Color.Black;
-                    dataTextBox.Text += $"\r\nWeb createtd!";
-                    
+                    RenameSetButton();
+                    AddToDataTextbox($"\r\nWeb createtd!");
                     ActivateBottomControls();
                     UpdateTrainingDataTable();
                     CreateNewNeuralNetwork();
@@ -334,8 +333,7 @@ namespace CustomisableNW
                 else if (setButton.Text == "RESET")
                 {
                     RenameSetButton();
-                    dataTextBox.Text += $"\r\n\r\nWeb deleted!\r\n{Separator(50)}\r\n\r\n";
-                        
+                    AddToDataTextbox($"\r\n\r\nWeb deleted!\r\n{Separator(50)}\r\n\r\n");
                     ActivateTopControls();
                     CleanTableLabels();
                 }
@@ -710,6 +708,10 @@ namespace CustomisableNW
                 $"({TrainingSet.GetTrainingSet(trainingFunction)[i][0]};{TrainingSet.GetTrainingSet(trainingFunction)[i][1]})" :
                 $"{TrainingSet.GetTrainingSet(trainingFunction)[i - 4][2]}";
             }
+        }
+        void AddToDataTextbox(string str)
+        {
+            dataTextBox.Text += str;
         }
         string Separator(int quantity)
         {
