@@ -91,7 +91,7 @@ namespace CustomisableNW
                     neuronsPerLayer.Add((int)NUDList[i].Value);
                 neuronsPerLayer.Add(1); //  - output neuron
 
-                Drawing(); // drawing scheme according to updated data 
+                DrawScheme(); // drawing scheme according to updated data 
             };
             settingsPanel.Controls.Add(hiddenlayersNUD);
 
@@ -124,7 +124,7 @@ namespace CustomisableNW
                 {
 
                     neuronsPerLayer[(int)NUD.Tag + 1] = (int)NUD.Value;
-                    Drawing();
+                    DrawScheme();
                 };
                 NUDList.Add(NUD);
                 settingsPanel.Controls.Add(NUD);
@@ -310,35 +310,6 @@ namespace CustomisableNW
                 Font = new Font(font, 20),
                 Location = new Point((settingsPanel.Width - 200) / 2, lab9.Location.Y + lab9.Height + 50)
             };
-            setButton.Click += (o, e) =>
-            {
-                if (trainingFunctionCB.Text == "")
-                {
-                    lab10.ForeColor = Color.Red;
-                    return;
-                }
-
-                if (setButton.Text == "SET")
-                {
-                    lab10.ForeColor = Color.Black;
-                    RenameSetButton();
-                    AddToDataTextbox($"\r\nWeb createtd!");
-                    ActivateBottomControls();
-                    UpdateTrainingDataTable();
-                    CreateNewNeuralNetwork();
-                    PrintWeights();
-                    PrintActivations();
-                    PrintError();
-                }
-                else if (setButton.Text == "RESET")
-                {
-                    RenameSetButton();
-                    AddToDataTextbox($"\r\n\r\nWeb deleted!\r\n{Separator(50)}\r\n\r\n");
-                    ActivateTopControls();
-                    CleanTableLabels();
-                }
-                
-            };
             settingsPanel.Controls.Add(setButton);
 
 
@@ -430,7 +401,7 @@ namespace CustomisableNW
 
 
             // itrationsLab "Iterations:"
-            Label itrationsLab = new Label
+            Label iterationsLab = new Label
             {
                 Text = "Iterations: 0",
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -438,7 +409,7 @@ namespace CustomisableNW
                 Font = new Font(font, 17),
                 Location = new Point(30, tablePanel.Location.Y + tablePanel.Height + 60)
             };
-            settingsPanel.Controls.Add(itrationsLab);
+            settingsPanel.Controls.Add(iterationsLab);
 
             // epochsLab "Complete epochs:"
             Label epochsLab = new Label
@@ -447,7 +418,7 @@ namespace CustomisableNW
                 TextAlign = ContentAlignment.MiddleLeft,
                 Size = new Size(250, 30),
                 Font = new Font(font, 17),
-                Location = new Point(30, itrationsLab.Location.Y + itrationsLab.Height + 10)
+                Location = new Point(30, iterationsLab.Location.Y + iterationsLab.Height + 10)
             };
             settingsPanel.Controls.Add(epochsLab);
 
@@ -457,7 +428,7 @@ namespace CustomisableNW
                 Text = "Error: -",
                 Font = new Font(font, 20),
                 Size = new Size(200, 50),
-                Location = new Point(30 + epochsLab.Location.X + epochsLab.Width + 10, itrationsLab.Location.Y + 15)
+                Location = new Point(30 + epochsLab.Location.X + epochsLab.Width + 10, iterationsLab.Location.Y + 15)
             };
             settingsPanel.Controls.Add(errorLab);
 
@@ -512,6 +483,7 @@ namespace CustomisableNW
                 for (int i = 0; i < iterationsNUD.Value; i++)
                 {
                     net.PlusIteration(selectedSetsList);
+                    PrintIterationNumber();
                     PrintWeightsGradient();
                     PrintWeightsDelta();
                     PrintNeurosDelta();
@@ -519,6 +491,7 @@ namespace CustomisableNW
                     PrintActivations();
                     PrintError();
                 }
+                DrawScheme();
                 UpdateErrorLabel();
                 UpdateIterationsLabel();
             };
@@ -545,6 +518,7 @@ namespace CustomisableNW
             plusIterationButton.Click += (o, e) =>
             {
                 net.PlusIteration(selectedSetsList);
+                PrintIterationNumber();
                 PrintWeightsGradient();
                 PrintWeightsDelta();
                 PrintNeurosDelta();
@@ -567,6 +541,7 @@ namespace CustomisableNW
             plusEpochButton.Click += (s, e) =>
             {
                 net.PlusIteration(selectedSetsList);
+                PrintIterationNumber();
                 PrintWeightsGradient();
                 PrintWeightsDelta();
                 PrintNeurosDelta();
@@ -578,15 +553,41 @@ namespace CustomisableNW
             };
             settingsPanel.Controls.Add(plusEpochButton);
 
+            // SET Button CLICK
+            setButton.Click += (o, e) =>
+            {
+                if (trainingFunctionCB.Text == "")
+                {
+                    lab10.ForeColor = Color.Red;
+                    return;
+                }
 
+                if (setButton.Text == "SET")
+                {
+                    lab10.ForeColor = Color.Black;
+                    RenameSetButton();
+                    AddToDataTextbox($"Web createtd!");
+                    ActivateBottomControls();
+                    UpdateTrainingDataTable();
+                    CreateNewNeuralNetwork();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+                else if (setButton.Text == "RESET")
+                {
+                    net = null;
+                    RenameSetButton();
+                    AddToDataTextbox($"\r\n\r\nWeb deleted!\r\n{Separator(50)}\r\n\r\n\r\n");
+                    ActivateTopControls();
+                    DrawDiagram();
+                    CleanTableLabels();
+                    CleanErrorLabel();
+                    CleanIterationsLabel();
+                    CleanIterationsNUD();
+                }
 
-
-
-
-
-
-
-
+            };
 
 
 
@@ -653,7 +654,7 @@ namespace CustomisableNW
             {
                 int iterations = net.IterationsQuantity;
                 string text = $"Iterations: {iterations}";
-                itrationsLab.Text = text;
+                iterationsLab.Text = text;
             }
             void UpdateErrorLabel()
             {
@@ -680,6 +681,18 @@ namespace CustomisableNW
             {
                 for (int i = 0; i < 8; i++)
                     tableLabels[i].Text = "-";
+            }
+            void CleanErrorLabel()
+            {
+                errorLab.Text = "ERROR: -";
+            }
+            void CleanIterationsLabel()
+            {
+                iterationsLab.Text = "Iterations: 0";
+            }
+            void CleanIterationsNUD()
+            {
+                iterationsNUD.Value = 0;
             }
             void RenameSetButton()
             {

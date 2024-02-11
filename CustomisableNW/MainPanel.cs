@@ -57,7 +57,7 @@ namespace CustomisableNW
                 diagramPanel.Visible = false;
                 dataPanel.Visible = false;
                 schemePanel.Visible = true;
-                Drawing();
+                DrawScheme();
                 if (setButton.Text == "RESET") // КОСТЫЛЬ!!!
                     UpdateNeuronLabels();
             };

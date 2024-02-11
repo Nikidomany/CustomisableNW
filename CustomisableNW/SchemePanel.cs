@@ -78,7 +78,7 @@ namespace CustomisableNW
             neuronsCoordinates = result;
         }
 
-        private void Drawing()
+        private void DrawScheme()
         {
             NeuronsCoordinatesComputing();
 

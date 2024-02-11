@@ -215,8 +215,11 @@ namespace CustomisableNW
 
             dataTextBox.Text += result;
         }
-
-
+        private void PrintIterationNumber()
+        {
+            int iterationsQuantity = net.IterationsQuantity;
+            dataTextBox.Text += $"\r\n\r\n{Separator(6)} {iterationsQuantity} ITERATION {Separator(6)}";
+        }
 
     }
 
