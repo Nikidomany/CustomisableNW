@@ -40,6 +40,9 @@ namespace CustomisableNW
         public List<List<Neuron>> Neurons { get { return neurons; } }
         private List<List<Neuron>> neurons = new List<List<Neuron>>();
 
+        public int IterationsQuantity { get { return iterationsQuantity; } }
+        private int iterationsQuantity = 0;
+
         public Net(List<int> neuronsPerLayer, float learningRate, float moment, float maxWeightsRandomization, float minWeightsRandomization, List<int[]> trainingSet)
         {
             this.neuronsPerLayer = neuronsPerLayer;
@@ -191,7 +194,7 @@ namespace CustomisableNW
             IncrementTrainSetNumber(selectedTrainingsets);
             ComputeActivations();
             ComputeError();
-
+            IncrementIterationsQuantity();
         }
         public void PlusEpoch(bool[] selectedTrainingsets)
         {
@@ -218,6 +221,10 @@ namespace CustomisableNW
 
             if (isItValidTrainingSet && isThereAValidTrainningSet)
                 IncrementTrainSetNumber(selectedTrainingsets);
+        }
+        private void IncrementIterationsQuantity()
+        {
+            iterationsQuantity++;
         }
     }
 
