@@ -523,6 +523,7 @@ namespace CustomisableNW
                     PrintActivations();
                     PrintError();
                 }
+                UpdateErrorLabel();
             };
             settingsPanel.Controls.Add(runButton);
 
@@ -553,6 +554,7 @@ namespace CustomisableNW
                 PrintWeights();
                 PrintActivations();
                 PrintError();
+                UpdateErrorLabel();
             };
             settingsPanel.Controls.Add(plusIterationButton);
 
@@ -573,6 +575,7 @@ namespace CustomisableNW
                 PrintWeights();
                 PrintActivations();
                 PrintError();
+                UpdateErrorLabel();
             };
             settingsPanel.Controls.Add(plusEpochButton);
 
@@ -646,6 +649,16 @@ namespace CustomisableNW
             for (int i = 0; i < settingsPanel.Controls.Count - 1; i++)
                 settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
             _lab2.Enabled = true;
+
+            void UpdateErrorLabel()
+            {
+                double errorValue = Math.Round(net.ErrorList[net.ErrorList.Count - 1], 3);
+                string text = $"Error: {errorValue}";
+                errorLab.Text = text;
+
+                if(errorValue <= 0.01)
+                    errorLab.ForeColor = Color.Red;
+            }
         }
 
         void UpdateTrainingDataTable()
@@ -657,6 +670,5 @@ namespace CustomisableNW
                 $"{TrainingSet.GetTrainingSet(trainingFunction)[i - 4][2]}";
             }
         }
-
     }
 }
