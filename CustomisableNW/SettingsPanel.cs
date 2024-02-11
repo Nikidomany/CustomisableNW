@@ -435,8 +435,8 @@ namespace CustomisableNW
             // itrationsLab "Iterations:"
             Label itrationsLab = new Label
             {
-                Text = "              Iterations: 0",
-                TextAlign = ContentAlignment.MiddleLeft,
+                Text = "Iterations: 0",
+                TextAlign = ContentAlignment.MiddleCenter,
                 Size = new Size(250, 25),
                 Font = new Font(font, 17),
                 Location = new Point(30, tablePanel.Location.Y + tablePanel.Height + 60)
@@ -524,6 +524,7 @@ namespace CustomisableNW
                     PrintError();
                 }
                 UpdateErrorLabel();
+                UpdateIterationsLabel();
             };
             settingsPanel.Controls.Add(runButton);
 
@@ -555,6 +556,7 @@ namespace CustomisableNW
                 PrintActivations();
                 PrintError();
                 UpdateErrorLabel();
+                UpdateIterationsLabel();
             };
             settingsPanel.Controls.Add(plusIterationButton);
 
@@ -576,6 +578,7 @@ namespace CustomisableNW
                 PrintActivations();
                 PrintError();
                 UpdateErrorLabel();
+                UpdateIterationsLabel();
             };
             settingsPanel.Controls.Add(plusEpochButton);
 
@@ -650,6 +653,12 @@ namespace CustomisableNW
                 settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
             _lab2.Enabled = true;
 
+            void UpdateIterationsLabel()
+            {
+                int iterations = net.IterationsQuantity;
+                string text = $"Iterations: {iterations}";
+                itrationsLab.Text = text;
+            }
             void UpdateErrorLabel()
             {
                 double errorValue = Math.Round(net.ErrorList[net.ErrorList.Count - 1], 3);
