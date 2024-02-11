@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -285,9 +286,9 @@ namespace CustomisableNW
             ComboBox trainingFunctionCB = new ComboBox
             {
                 Width = 80,
-                Font = new Font(font, 14)
+                Font = new Font(font, 14),
+                Location = new Point(lab10.Location.X + lab10.Width, lab10.Location.Y + (lab10.Height - 20) / 2 - 4)
             };
-            trainingFunctionCB.Location = new Point(lab10.Location.X + lab10.Width, lab10.Location.Y + (lab10.Height - trainingFunctionCB.Height) / 2 - 4);
             string[] functions = new string[3]
             {
                 "XOR",
@@ -295,52 +296,50 @@ namespace CustomisableNW
                 "AND"
             };
             trainingFunctionCB.Items.AddRange(functions);
+            trainingFunctionCB.SelectionChangeCommitted += (s, e) =>
+            {
+                Enum.TryParse(trainingFunctionCB.SelectedItem.ToString(), out trainingFunction);
+            };
             settingsPanel.Controls.Add(trainingFunctionCB);
 
             // setButton
             setButton = new Button
             {
                 Text = "SET",
-                Size = new Size(100, 50),
+                Size = new Size(200, 50),
                 Font = new Font(font, 20),
-                Width = 200
+                Location = new Point((settingsPanel.Width - 200) / 2, lab9.Location.Y + lab9.Height + 50)
             };
-            setButton.Location = new Point((settingsPanel.Width - setButton.Width) / 2, lab9.Location.Y + lab9.Height + 50);
             setButton.Click += (o, e) =>
             {
-                if (trainingFunctionCB.Text != "")
+                if (trainingFunctionCB.Text == "")
                 {
-                    if (setButton.Text == "SET")
-                    {
-                        for (int i = 0; i < settingsPanel.Controls.Count; i++)
-                            settingsPanel.Controls[i].Enabled = (i < 20) ? false : true;
-                        setButton.Text = "RESET";
-                        lab10.ForeColor = lab9.BackColor;
-
-                        Enum.TryParse(trainingFunctionCB.SelectedItem.ToString(), out trainingFunction);
-
-                        UpdateTrainingDataTable();
-                        net = new Net(neuronsPerLayer, learningRate, moment, maxWeightsRandomize, minWeightsRandomize, TrainingSet.GetTrainingSet(trainingFunction)); // создаём новую сеть и передаём в неё все параметры
-
-
-                        PrintWeights();
-                        PrintActivations();
-                        PrintError();
-                    }
-                    else if (setButton.Text == "RESET")
-                    {
-                        for (int i = 0; i < settingsPanel.Controls.Count - 2; i++)
-                            settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
-                        for (int i = 0; i < 8; i++)
-                        {
-                            tableLabels[i].Text = "-";
-                        }
-                        setButton.Text = "SET";
-                        dataTextBox.Text += "\r\n\r\nWeb deleted!\r\n----------------------------------\r\n";
-                    }
-                }
-                else
                     lab10.ForeColor = Color.Red;
+                    return;
+                }
+
+                if (setButton.Text == "SET")
+                {
+                    RenameSetButton();
+                    lab10.ForeColor = Color.Black;
+                    dataTextBox.Text += $"\r\nWeb createtd!";
+                    
+                    ActivateBottomControls();
+                    UpdateTrainingDataTable();
+                    CreateNewNeuralNetwork();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+                else if (setButton.Text == "RESET")
+                {
+                    RenameSetButton();
+                    dataTextBox.Text += $"\r\n\r\nWeb deleted!\r\n{Separator(50)}\r\n\r\n";
+                        
+                    ActivateTopControls();
+                    CleanTableLabels();
+                }
+                
             };
             settingsPanel.Controls.Add(setButton);
 
@@ -510,7 +509,6 @@ namespace CustomisableNW
                 Size = new Size(80, iterationsNUD.Height),
                 Location = new Point(iterationsNUD.Location.X + iterationsNUD.Width, iterationsNUD.Location.Y)
             };
-            this.runButton = runButton;
             runButton.Click += (s, e) =>
             {
                 for (int i = 0; i < iterationsNUD.Value; i++)
@@ -667,9 +665,43 @@ namespace CustomisableNW
 
                 if(errorValue <= 0.01)
                     errorLab.ForeColor = Color.Red;
+                else
+                    errorLab.ForeColor = Color.Black;
+            }
+            void ActivateTopControls()
+            {
+                for (int i = 0; i < settingsPanel.Controls.Count - 2; i++)
+                    settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
+            }
+            void ActivateBottomControls()
+            {
+                for (int i = 0; i < settingsPanel.Controls.Count; i++)
+                    settingsPanel.Controls[i].Enabled = (i < 20) ? false : true;
+            }
+            void CleanTableLabels()
+            {
+                for (int i = 0; i < 8; i++)
+                    tableLabels[i].Text = "-";
+            }
+            void RenameSetButton()
+            {
+                if (setButton.Text == "SET")
+                    setButton.Text = "RESET";
+                else if (setButton.Text == "RESET")
+                    setButton.Text = "SET";
             }
         }
 
+        void CreateNewNeuralNetwork()
+        {
+            net = new Net(
+                neuronsPerLayer, 
+                learningRate, 
+                moment, 
+                maxWeightsRandomize, 
+                minWeightsRandomize, 
+                TrainingSet.GetTrainingSet(trainingFunction) );
+        }
         void UpdateTrainingDataTable()
         {
             for (int i = 0; i < 8; i++)
@@ -678,6 +710,14 @@ namespace CustomisableNW
                 $"({TrainingSet.GetTrainingSet(trainingFunction)[i][0]};{TrainingSet.GetTrainingSet(trainingFunction)[i][1]})" :
                 $"{TrainingSet.GetTrainingSet(trainingFunction)[i - 4][2]}";
             }
+        }
+        string Separator(int quantity)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < quantity; i++)
+                sb.Append("-");
+            string result = sb.ToString();
+            return result;
         }
     }
 }
