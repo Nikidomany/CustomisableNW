@@ -505,6 +505,26 @@ namespace CustomisableNW
                 Size = new Size(iterationsNUD.Width + runButton.Width, iterationsNUD.Height),
                 Location = new Point(55, iterationsNUD.Location.Y + iterationsNUD.Height + 10)
             };
+            endButton.Click += (o, e) =>
+            {
+                
+                while (net.ErrorList[net.ErrorList.Count-1] != 0 && net.IterationsQuantity < 50)
+                {
+                    net.PlusIteration(selectedSetsList);
+                    PrintIterationNumber();
+                    PrintWeightsGradient();
+                    PrintWeightsDelta();
+                    PrintNeurosDelta();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+                DrawScheme();
+                DrawDiagram();
+                UpdateErrorLabel();
+                UpdateIterationsLabel();
+
+            };
             settingsPanel.Controls.Add(endButton);
 
             //plusIterationButton
