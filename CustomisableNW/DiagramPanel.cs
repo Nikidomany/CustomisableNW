@@ -7,38 +7,37 @@ namespace CustomisableNW
 
     public partial class MainForm
     {
-        Panel diagramPanel = new Panel();
-        PictureBox diagramPB = new PictureBox();
+        Panel errorDiagramPanel = new Panel();
+        PictureBox errorDiagramPB = new PictureBox();
 
         // график значений весов
-        void DiagramPanelGraphics()
+        void ErrorDiagramPanelGraphics()
         {
-            // diagramPanel.Tag = "diagram";
-            diagramPanel.Visible = false;
-            diagramPanel.Location = new Point(0, menuStrip.Height);
-            diagramPanel.Size = new Size(mainPanel.Width, mainPanel.Height - menuStrip.Height - statusStrip.Height);
-            mainPanel.Controls.Add(diagramPanel);
+            errorDiagramPanel.Visible = false;
+            errorDiagramPanel.Location = new Point(0, menuStrip.Height);
+            errorDiagramPanel.Size = new Size(mainPanel.Width, mainPanel.Height - menuStrip.Height - statusStrip.Height);
+            mainPanel.Controls.Add(errorDiagramPanel);
 
-            diagramPB.Dock = DockStyle.Fill;
-            diagramPB.BorderStyle = BorderStyle.Fixed3D;
+            errorDiagramPB.Dock = DockStyle.Fill;
+            errorDiagramPB.BorderStyle = BorderStyle.Fixed3D;
             /*с
              * 
              * 
              * 
              * 
              */
-            diagramPanel.Controls.Add(diagramPB);
+            errorDiagramPanel.Controls.Add(errorDiagramPB);
         }
 
 
 
 
-        void DrawDiagram()
+        void DrawErrorDiagram()
         {
             Pen axisPen = new Pen(Color.Black, 2);
             Pen errorPen = new Pen(Color.Red, 2);
 
-            Graphics diagram = diagramPB.CreateGraphics();
+            Graphics diagram = errorDiagramPB.CreateGraphics();
             diagram.Clear(Color.White);
 
             DrawAxles();
@@ -46,8 +45,6 @@ namespace CustomisableNW
             if (net == null)
                 return;
             DrawErrorDiagram();
-            //DrawWeightsDiagrams();
-
 
 
             void DrawAxles()
@@ -70,13 +67,12 @@ namespace CustomisableNW
                     schemePB.Height * 19 / 20
                     );
             }
-
             void DrawGraphAxesDivisions()
             {
-                Point scaleLabelsStartPosition = new Point(0, diagramPB.Height * 1 / 20);
-                Point scaleLinesStartPosition = new Point(diagramPB.Width * 2 / 20 - 5, diagramPB.Height * 1 / 20);
-                int xInterval = diagramPB.Width * 18 / 20 / 50,
-                    yInterval = diagramPB.Height * 18 / 20 / 20;
+                Point scaleLabelsStartPosition = new Point(0, errorDiagramPB.Height * 1 / 20);
+                Point scaleLinesStartPosition = new Point(errorDiagramPB.Width * 2 / 20 - 5, errorDiagramPB.Height * 1 / 20);
+                int xInterval = errorDiagramPB.Width * 18 / 20 / 50,
+                    yInterval = errorDiagramPB.Height * 18 / 20 / 20;
 
                 for (int i = 0; i < 11; i++)
                 {
@@ -88,9 +84,9 @@ namespace CustomisableNW
                         BackColor = Color.White,
                         Font = new Font(font, 12),
                         Size = new Size(40, 20),
-                        Location = new Point(scaleLabelsStartPosition.X + diagramPB.Width * 1 / 20, scaleLabelsStartPosition.Y + yInterval * i - 9)
+                        Location = new Point(scaleLabelsStartPosition.X + errorDiagramPB.Width * 1 / 20, scaleLabelsStartPosition.Y + yInterval * i - 9)
                     };
-                    diagramPB.Controls.Add(scaleLabel);
+                    errorDiagramPB.Controls.Add(scaleLabel);
 
                     diagram.DrawLine(axisPen, scaleLinesStartPosition.X, scaleLinesStartPosition.Y + yInterval * i + 1, scaleLinesStartPosition.X + 9, scaleLinesStartPosition.Y + yInterval * i);
                 }
@@ -107,7 +103,7 @@ namespace CustomisableNW
                         Size = new Size(40, 20),
                         Location = new Point(scaleLabelsStartPosition.X, scaleLabelsStartPosition.Y + yInterval * i - 9)
                     };
-                    diagramPB.Controls.Add(scaleLabel);
+                    errorDiagramPB.Controls.Add(scaleLabel);
 
                     diagram.DrawLine(axisPen, scaleLinesStartPosition.X, scaleLinesStartPosition.Y + yInterval * i + 1, scaleLinesStartPosition.X + 9, scaleLinesStartPosition.Y + yInterval * i);
 
@@ -115,10 +111,10 @@ namespace CustomisableNW
 
                 for (int i = 1; i < 51; i++)
                 {
-                    int x1 = diagramPanel.Width * 2 / 20 + xInterval * i,
-                        y1 = diagramPanel.Height / 2 - (i % 5 == 0 ? 6 : 3),
+                    int x1 = errorDiagramPanel.Width * 2 / 20 + xInterval * i,
+                        y1 = errorDiagramPanel.Height / 2 - (i % 5 == 0 ? 6 : 3),
                         x2 = x1,
-                        y2 = diagramPanel.Height / 2 + (i % 5 == 0 ? 6 : 3);
+                        y2 = errorDiagramPanel.Height / 2 + (i % 5 == 0 ? 6 : 3);
 
                     if(i % 5 == 0)
                     {
@@ -132,7 +128,7 @@ namespace CustomisableNW
                             Size = new Size(30, 20),
                             Location = new Point(x2 - 13, y1 + 12)
                         };
-                        diagramPB.Controls.Add(scaleLabel);
+                        errorDiagramPB.Controls.Add(scaleLabel);
                     }
 
 
@@ -141,14 +137,13 @@ namespace CustomisableNW
 
 
             }
-
             void DrawErrorDiagram()
             {
                 List<float> errorList = net.ErrorList;
 
-                Point O = new Point(diagramPB.Width * 2 / 20, diagramPB.Height * 1 / 2);
-                int xDiagramRange = diagramPB.Width * 18 / 20,
-                    yDiagramRange = diagramPB.Height * 9 / 20;
+                Point O = new Point(errorDiagramPB.Width * 2 / 20, errorDiagramPB.Height * 1 / 2);
+                int xDiagramRange = errorDiagramPB.Width * 18 / 20,
+                    yDiagramRange = errorDiagramPB.Height * 9 / 20;
 
                 int xInterval = xDiagramRange / 50;
 
@@ -163,31 +158,6 @@ namespace CustomisableNW
                 }
 
             }
-
-            void DrawWeightsDiagrams()
-            {
-                Point O = new Point(diagramPB.Width * 2 / 20, diagramPB.Height * 1 / 2);
-                int xDiagramRange = diagramPB.Width * 9 / 20,
-                    yDiagramRange = diagramPB.Height * 9 / 20;
-                int xInterval = xDiagramRange / 50;
-
-                for (int i = 0; i < net.Neurons.Count; i++)
-                    for (int j = 0; j < net.Neurons[i].Count; j++)
-                        for (int k = 0; k < net.Neurons[i][j].Weights.Count; k++)
-                        {
-                            List<Weight> weights = net.Neurons[i][j].Weights;
-
-                            for (int l = 1; l < weights.Count; l++)
-                            {
-                                int x1 = O.X + xInterval * (i - 1),
-                                    y1 = O.Y - (int)(yDiagramRange * weights[l - 1].Value / 10),
-                                    x2 = O.X + xInterval * i,
-                                    y2 = O.Y - (int)(yDiagramRange * weights[l].Value / 10);
-
-                                diagram.DrawLine(new Pen(Color.Blue, 1), x1, y1, x2, y2);
-                            }
-                        }
-            } // не готов
         }
 
     }

@@ -520,7 +520,7 @@ namespace CustomisableNW
                     PrintError();
                 }
                 DrawScheme();
-                DrawDiagram();
+                DrawErrorDiagram();
                 UpdateErrorLabel();
                 UpdateIterationsLabel();
 
@@ -600,7 +600,7 @@ namespace CustomisableNW
                     RenameSetButton();
                     AddToDataTextbox($"\r\n\r\nWeb deleted!\r\n{Separator(50)}\r\n\r\n\r\n");
                     ActivateTopControls();
-                    DrawDiagram();
+                    DrawErrorDiagram();
                     CleanTableLabels();
                     CleanErrorLabel();
                     CleanIterationsLabel();
