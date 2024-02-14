@@ -52,7 +52,7 @@ namespace CustomisableNW
                 // Ox
                 diagram.DrawLine(
                     axisPen,
-                    schemePB.Width * 2 / 20,
+                    schemePB.Width * 1 / 20,
                     schemePB.Height * 1 / 2,
                     schemePB.Width,
                     schemePB.Height * 1 / 2
@@ -61,16 +61,16 @@ namespace CustomisableNW
                 // Oy
                 diagram.DrawLine(
                     axisPen,
-                    schemePB.Width * 2 / 20,
+                    schemePB.Width * 1 / 20,
                     schemePB.Height * 1 / 20,
-                    schemePB.Width * 2 / 20,
+                    schemePB.Width * 1 / 20,
                     schemePB.Height * 19 / 20
                     );
             }
             void DrawGraphAxesDivisions()
             {
                 Point scaleLabelsStartPosition = new Point(0, errorDiagramPB.Height * 1 / 20);
-                Point scaleLinesStartPosition = new Point(errorDiagramPB.Width * 2 / 20 - 5, errorDiagramPB.Height * 1 / 20);
+                Point scaleLinesStartPosition = new Point(errorDiagramPB.Width * 1 / 20 - 5, errorDiagramPB.Height * 1 / 20);
                 int xInterval = errorDiagramPB.Width * 18 / 20 / 50,
                     yInterval = errorDiagramPB.Height * 18 / 20 / 20;
 
@@ -84,34 +84,17 @@ namespace CustomisableNW
                         BackColor = Color.White,
                         Font = new Font(font, 12),
                         Size = new Size(40, 20),
-                        Location = new Point(scaleLabelsStartPosition.X + errorDiagramPB.Width * 1 / 20, scaleLabelsStartPosition.Y + yInterval * i - 9)
-                    };
-                    errorDiagramPB.Controls.Add(scaleLabel);
-
-                    diagram.DrawLine(axisPen, scaleLinesStartPosition.X, scaleLinesStartPosition.Y + yInterval * i + 1, scaleLinesStartPosition.X + 9, scaleLinesStartPosition.Y + yInterval * i);
-                }
-
-                for (int i = 0; i < 21; i++)
-                {
-                    Label scaleLabel = new Label
-                    {
-                        Text = $"{(10 - 1 * i)}",
-                        TextAlign = ContentAlignment.MiddleRight,
-                        ForeColor = Color.Blue,
-                        BackColor = Color.White,
-                        Font = new Font(font, 12),
-                        Size = new Size(40, 20),
                         Location = new Point(scaleLabelsStartPosition.X, scaleLabelsStartPosition.Y + yInterval * i - 9)
                     };
                     errorDiagramPB.Controls.Add(scaleLabel);
 
                     diagram.DrawLine(axisPen, scaleLinesStartPosition.X, scaleLinesStartPosition.Y + yInterval * i + 1, scaleLinesStartPosition.X + 9, scaleLinesStartPosition.Y + yInterval * i);
-
                 }
+
 
                 for (int i = 1; i < 51; i++)
                 {
-                    int x1 = errorDiagramPanel.Width * 2 / 20 + xInterval * i,
+                    int x1 = errorDiagramPanel.Width * 1 / 20 + xInterval * i,
                         y1 = errorDiagramPanel.Height / 2 - (i % 5 == 0 ? 6 : 3),
                         x2 = x1,
                         y2 = errorDiagramPanel.Height / 2 + (i % 5 == 0 ? 6 : 3);
@@ -141,7 +124,7 @@ namespace CustomisableNW
             {
                 List<float> errorList = net.ErrorList;
 
-                Point O = new Point(errorDiagramPB.Width * 2 / 20, errorDiagramPB.Height * 1 / 2);
+                Point O = new Point(errorDiagramPB.Width * 1 / 20, errorDiagramPB.Height * 1 / 2);
                 int xDiagramRange = errorDiagramPB.Width * 18 / 20,
                     yDiagramRange = errorDiagramPB.Height * 9 / 20;
 

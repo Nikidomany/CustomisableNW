@@ -590,6 +590,7 @@ namespace CustomisableNW
                     ActivateBottomControls();
                     UpdateTrainingDataTable();
                     CreateNewNeuralNetwork();
+                    InitilizeLayersMenuStripItems();
                     PrintWeights();
                     PrintActivations();
                     PrintError();
@@ -602,6 +603,7 @@ namespace CustomisableNW
                     ActivateTopControls();
                     DrawErrorDiagram();
                     CleanTableLabels();
+                    CleanLayersMenuStripItems();
                     CleanErrorLabel();
                     CleanIterationsLabel();
                     CleanIterationsNUD();
