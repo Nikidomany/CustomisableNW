@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Text;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
 
 namespace CustomisableNW
 {
@@ -14,7 +15,7 @@ namespace CustomisableNW
         public Button runButton;
         Button setButton;
 
-        bool[] selectedSetsList = new bool[] 
+        bool[] selectedSetsList = new bool[]
         {true, true, true, true};
 
         List<Label> tableLabels = new List<Label>();
@@ -23,7 +24,7 @@ namespace CustomisableNW
 
         public int hiddenLayersNum = 1;
         public List<int> neuronsPerLayer = new List<int> { 2, 3, 1 };
-        
+
         List<NumericUpDown> NUDList = new List<NumericUpDown>();
 
         public float maxWeightsRandomize = 1,
@@ -41,8 +42,8 @@ namespace CustomisableNW
             settingsPanel.Visible = false;
             this.Controls.Add(settingsPanel);
 
-            
-                
+
+
 
 
 
@@ -85,12 +86,12 @@ namespace CustomisableNW
                 for (int i = 0; i < 4; i++)     // visualization/hiding NUDs
                     NUDList[i].Visible = (i <= hiddenlayersNUD.Value - 1) ? true : false;
 
-                neuronsPerLayer = new List<int> { 2}; // 2 - input neurons 
+                neuronsPerLayer = new List<int> { 2 }; // 2 - input neurons 
                 for (int i = 0; i < hiddenlayersNUD.Value; i++) // recording actual neurons number per layer
                     neuronsPerLayer.Add((int)NUDList[i].Value);
                 neuronsPerLayer.Add(1); //  - output neuron
 
-                Drawing(); // drawing scheme according to updated data 
+                DrawScheme(); // drawing scheme according to updated data 
             };
             settingsPanel.Controls.Add(hiddenlayersNUD);
 
@@ -122,8 +123,8 @@ namespace CustomisableNW
                 NUD.ValueChanged += (o, e) =>
                 {
 
-                    neuronsPerLayer[(int)NUD.Tag+1] = (int)NUD.Value;
-                    Drawing();
+                    neuronsPerLayer[(int)NUD.Tag + 1] = (int)NUD.Value;
+                    DrawScheme();
                 };
                 NUDList.Add(NUD);
                 settingsPanel.Controls.Add(NUD);
@@ -280,14 +281,14 @@ namespace CustomisableNW
 
             };
             settingsPanel.Controls.Add(lab10);
-            
+
             // ComboBox training function
             ComboBox trainingFunctionCB = new ComboBox
             {
                 Width = 80,
-                Font = new Font(font, 14)
+                Font = new Font(font, 14),
+                Location = new Point(lab10.Location.X + lab10.Width, lab10.Location.Y + (lab10.Height - 20) / 2 - 4)
             };
-            trainingFunctionCB.Location = new Point(lab10.Location.X + lab10.Width, lab10.Location.Y + (lab10.Height - trainingFunctionCB.Height) / 2 - 4);
             string[] functions = new string[3]
             {
                 "XOR",
@@ -295,52 +296,19 @@ namespace CustomisableNW
                 "AND"
             };
             trainingFunctionCB.Items.AddRange(functions);
+            trainingFunctionCB.SelectionChangeCommitted += (s, e) =>
+            {
+                Enum.TryParse(trainingFunctionCB.SelectedItem.ToString(), out trainingFunction);
+            };
             settingsPanel.Controls.Add(trainingFunctionCB);
 
             // setButton
             setButton = new Button
             {
                 Text = "SET",
-                Size = new Size(100, 50),
+                Size = new Size(200, 50),
                 Font = new Font(font, 20),
-                Width = 200
-            };
-            setButton.Location = new Point((settingsPanel.Width - setButton.Width) / 2, lab9.Location.Y + lab9.Height + 50);
-            setButton.Click += (o, e) =>
-            {
-
-                if (trainingFunctionCB.Text != "")
-                {
-                    if(setButton.Text == "SET")
-                    {
-                        for (int i = 0; i < settingsPanel.Controls.Count; i++)
-                            settingsPanel.Controls[i].Enabled = (i < 20) ? false : true;
-                        setButton.Text = "RESET";
-                        lab10.ForeColor = lab9.BackColor;
-
-                        Enum.TryParse(trainingFunctionCB.SelectedItem.ToString(), out trainingFunction);
-                        
-                        UpdateTrainingDataTable();    
-                        net = new Net(neuronsPerLayer,learningRate, moment, maxWeightsRandomize, minWeightsRandomize, TrainingSet.GetTrainingSet(trainingFunction)); // создаём новую сеть и передаём в неё все параметры
-
-                        PrintWeights();
-                        PrintActivations();
-                        PrintError();
-                    }
-                    else if (setButton.Text == "RESET")
-                    {
-                        for (int i = 0; i < settingsPanel.Controls.Count-2; i++)
-                            settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
-                        for (int i = 0; i < 8; i++)
-                        {
-                            tableLabels[i].Text = "-";
-                        }
-                        setButton.Text = "SET";
-                        dataTextBox.Text += "\r\n\r\nWeb deleted!\r\n----------------------------------\r\n";
-                    }
-                }
-                else
-                    lab10.ForeColor = Color.Red;
+                Location = new Point((settingsPanel.Width - 200) / 2, lab9.Location.Y + lab9.Height + 50)
             };
             settingsPanel.Controls.Add(setButton);
 
@@ -349,7 +317,7 @@ namespace CustomisableNW
             Panel tablePanel = new Panel
             {
                 Location = new Point(settingsPanel.Width / 4, setButton.Location.Y + setButton.Height + 40),
-                Size = new Size(settingsPanel.Width/2, settingsPanel.Width / 6),
+                Size = new Size(settingsPanel.Width / 2, settingsPanel.Width / 6),
                 BorderStyle = BorderStyle.FixedSingle
             };
             for (int i = 0; i < 2; i++)
@@ -385,8 +353,8 @@ namespace CustomisableNW
                 Text = "Input:",
                 Font = new Font(font, 15),
                 TextAlign = ContentAlignment.MiddleRight,
-                Size = new Size( 100, tablePanel.Height/2),
-                Location  = new Point(tablePanel.Location.X - 100, tablePanel.Location.Y)
+                Size = new Size(100, tablePanel.Height / 2),
+                Location = new Point(tablePanel.Location.X - 100, tablePanel.Location.Y)
             };
             settingsPanel.Controls.Add(lab11);
 
@@ -397,7 +365,7 @@ namespace CustomisableNW
                 Font = new Font(font, 15),
                 TextAlign = ContentAlignment.MiddleRight,
                 Size = new Size(100, tablePanel.Height / 2),
-                Location = new Point(tablePanel.Location.X - 100, tablePanel.Location.Y + tablePanel.Height/2)
+                Location = new Point(tablePanel.Location.X - 100, tablePanel.Location.Y + tablePanel.Height / 2)
             };
             settingsPanel.Controls.Add(lab12);
 
@@ -410,7 +378,8 @@ namespace CustomisableNW
                     Text = "ON",
                     BackColor = Color.LightGreen,
                     Size = new Size(tablePanel.Width / 4, tablePanel.Width / 6),
-                    Location = new Point(tablePanel.Location.X + tablePanel.Width/4* i, tablePanel.Location.Y + tablePanel.Height)
+                    Location = new Point(tablePanel.Location.X + tablePanel.Width / 4 * i, tablePanel.Location.Y + tablePanel.Height),
+                    Tag = i
                 };
                 button.Click += (o, e) =>
                 {
@@ -418,13 +387,13 @@ namespace CustomisableNW
                     {
                         button.Text = "OFF";
                         button.BackColor = Color.IndianRed;
-                        selectedSetsList[i] = false;
+                        selectedSetsList[(int)button.Tag] = false;
                     }
                     else if (button.Text == "OFF")
                     {
                         button.Text = "ON";
                         button.BackColor = Color.LightGreen;
-                        selectedSetsList[i] = true;
+                        selectedSetsList[(int)button.Tag] = true;
                     }
                 };
                 settingsPanel.Controls.Add(button);
@@ -432,15 +401,15 @@ namespace CustomisableNW
 
 
             // itrationsLab "Iterations:"
-            Label itrationsLab = new Label
+            Label iterationsLab = new Label
             {
-                Text = "              Iterations: 0",
-                TextAlign = ContentAlignment.MiddleLeft,
+                Text = "Iterations: 0",
+                TextAlign = ContentAlignment.MiddleCenter,
                 Size = new Size(250, 25),
                 Font = new Font(font, 17),
                 Location = new Point(30, tablePanel.Location.Y + tablePanel.Height + 60)
             };
-            settingsPanel.Controls.Add(itrationsLab);
+            settingsPanel.Controls.Add(iterationsLab);
 
             // epochsLab "Complete epochs:"
             Label epochsLab = new Label
@@ -449,7 +418,7 @@ namespace CustomisableNW
                 TextAlign = ContentAlignment.MiddleLeft,
                 Size = new Size(250, 30),
                 Font = new Font(font, 17),
-                Location = new Point(30, itrationsLab.Location.Y + itrationsLab.Height + 10)
+                Location = new Point(30, iterationsLab.Location.Y + iterationsLab.Height + 10)
             };
             settingsPanel.Controls.Add(epochsLab);
 
@@ -459,7 +428,7 @@ namespace CustomisableNW
                 Text = "Error: -",
                 Font = new Font(font, 20),
                 Size = new Size(200, 50),
-                Location = new Point(30 + epochsLab.Location.X + epochsLab.Width + 10, itrationsLab.Location.Y + 15)
+                Location = new Point(30 + epochsLab.Location.X + epochsLab.Width + 10, iterationsLab.Location.Y + 15)
             };
             settingsPanel.Controls.Add(errorLab);
 
@@ -472,7 +441,7 @@ namespace CustomisableNW
                 Size = new Size(100, 30),
                 Font = new Font(font, 15),
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(settingsPanel.Width/4 - 50, epochsLab.Location.Y + epochsLab.Height + 20)
+                Location = new Point(settingsPanel.Width / 4 - 50, epochsLab.Location.Y + epochsLab.Height + 20)
             };
             settingsPanel.Controls.Add(lab13);
 
@@ -483,12 +452,12 @@ namespace CustomisableNW
                 Size = new Size(120, 30),
                 Font = new Font(font, 15),
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(settingsPanel.Width * 3/4 - 60, epochsLab.Location.Y + epochsLab.Height + 20)
+                Location = new Point(settingsPanel.Width * 3 / 4 - 60, epochsLab.Location.Y + epochsLab.Height + 20)
             };
             settingsPanel.Controls.Add(lab14);
 
             // epochsNUD
-            NumericUpDown epochsNUD = new NumericUpDown
+            NumericUpDown iterationsNUD = new NumericUpDown
             {
                 Value = 0,
                 Increment = 1,
@@ -497,19 +466,35 @@ namespace CustomisableNW
                 Width = 60,
                 TextAlign = HorizontalAlignment.Center,
                 Font = new Font(font, 20),
-                Location = new Point( 55, lab13.Location.Y + lab13.Height + 20)
+                Location = new Point(55, lab13.Location.Y + lab13.Height + 20)
             };
-            settingsPanel.Controls.Add(epochsNUD);
+            settingsPanel.Controls.Add(iterationsNUD);
 
             // runButton
             Button runButton = new Button
             {
                 Text = "RUN",
                 Font = new Font(font, 17),
-                Size = new Size(80, epochsNUD.Height),
-                Location = new Point(epochsNUD.Location.X + epochsNUD.Width, epochsNUD.Location.Y)
+                Size = new Size(80, iterationsNUD.Height),
+                Location = new Point(iterationsNUD.Location.X + iterationsNUD.Width, iterationsNUD.Location.Y)
             };
-            this.runButton = runButton;
+            runButton.Click += (s, e) =>
+            {
+                for (int i = 0; i < iterationsNUD.Value; i++)
+                {
+                    net.PlusIteration(selectedSetsList);
+                    PrintIterationNumber();
+                    PrintWeightsGradient();
+                    PrintWeightsDelta();
+                    PrintNeurosDelta();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+                DrawScheme();
+                UpdateErrorLabel();
+                UpdateIterationsLabel();
+            };
             settingsPanel.Controls.Add(runButton);
 
             // endButton
@@ -517,8 +502,28 @@ namespace CustomisableNW
             {
                 Text = "END",
                 Font = new Font(font, 17),
-                Size = new Size(epochsNUD.Width + runButton.Width, epochsNUD.Height),
-                Location = new Point(55, epochsNUD.Location.Y + epochsNUD.Height + 10)
+                Size = new Size(iterationsNUD.Width + runButton.Width, iterationsNUD.Height),
+                Location = new Point(55, iterationsNUD.Location.Y + iterationsNUD.Height + 10)
+            };
+            endButton.Click += (o, e) =>
+            {
+                
+                while (net.ErrorList[net.ErrorList.Count-1] != 0 && net.IterationsQuantity < 50)
+                {
+                    net.PlusIteration(selectedSetsList);
+                    PrintIterationNumber();
+                    PrintWeightsGradient();
+                    PrintWeightsDelta();
+                    PrintNeurosDelta();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+                DrawScheme();
+                DrawErrorDiagram();
+                UpdateErrorLabel();
+                UpdateIterationsLabel();
+
             };
             settingsPanel.Controls.Add(endButton);
 
@@ -528,17 +533,20 @@ namespace CustomisableNW
                 Text = "+ Iteration",
                 Font = new Font(font, 18),
                 Size = new Size(150, runButton.Height),
-                Location = new Point(settingsPanel.Width * 3/4 - 75 , runButton.Location.Y)
+                Location = new Point(settingsPanel.Width * 3 / 4 - 75, runButton.Location.Y)
             };
             plusIterationButton.Click += (o, e) =>
             {
                 net.PlusIteration(selectedSetsList);
+                PrintIterationNumber();
                 PrintWeightsGradient();
                 PrintWeightsDelta();
                 PrintNeurosDelta();
                 PrintWeights();
                 PrintActivations();
                 PrintError();
+                UpdateErrorLabel();
+                UpdateIterationsLabel();
             };
             settingsPanel.Controls.Add(plusIterationButton);
 
@@ -550,17 +558,58 @@ namespace CustomisableNW
                 Size = new Size(150, endButton.Height),
                 Location = new Point(settingsPanel.Width * 3 / 4 - 75, endButton.Location.Y)
             };
+            plusEpochButton.Click += (s, e) =>
+            {
+                net.PlusIteration(selectedSetsList);
+                PrintIterationNumber();
+                PrintWeightsGradient();
+                PrintWeightsDelta();
+                PrintNeurosDelta();
+                PrintWeights();
+                PrintActivations();
+                PrintError();
+                UpdateErrorLabel();
+                UpdateIterationsLabel();
+            };
             settingsPanel.Controls.Add(plusEpochButton);
 
+            // SET Button CLICK
+            setButton.Click += (o, e) =>
+            {
+                if (trainingFunctionCB.Text == "")
+                {
+                    lab10.ForeColor = Color.Red;
+                    return;
+                }
 
+                if (setButton.Text == "SET")
+                {
+                    lab10.ForeColor = Color.Black;
+                    RenameSetButton();
+                    AddToDataTextbox($"Web createtd!");
+                    ActivateBottomControls();
+                    UpdateTrainingDataTable();
+                    CreateNewNeuralNetwork();
+                    InitilizeLayersMenuStripItems();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+                else if (setButton.Text == "RESET")
+                {
+                    net = null;
+                    RenameSetButton();
+                    AddToDataTextbox($"\r\n\r\nWeb deleted!\r\n{Separator(50)}\r\n\r\n\r\n");
+                    ActivateTopControls();
+                    DrawErrorDiagram();
+                    CleanTableLabels();
+                    CleanLayersMenuStripItems();
+                    CleanErrorLabel();
+                    CleanIterationsLabel();
+                    CleanIterationsNUD();
+                }
 
-
-
-
-
-
-
-
+            };
 
 
 
@@ -578,9 +627,9 @@ namespace CustomisableNW
             // ___Panel2
             Panel _panel2 = new Panel
             {
-                Size = new Size(2,400),
+                Size = new Size(2, 400),
                 BorderStyle = BorderStyle.FixedSingle,
-                Location = new Point(settingsPanel.Width/2, lab13.Location.Y - 5)
+                Location = new Point(settingsPanel.Width / 2, lab13.Location.Y - 5)
             };
             settingsPanel.Controls.Add(_panel2);
 
@@ -605,25 +654,87 @@ namespace CustomisableNW
             settingsPanel.Controls.Add(_lab2);
             setButton.Click += (o, e) =>
             {
-                if(trainingFunctionCB.Text != "")
-                if (setButton.Text == "SET")
-                {
-                    _lab1.Visible = false;
-                    _lab2.Visible = true;
-                }
-                else if(setButton.Text == "RESET")
-                {
-                    _lab1.Visible = true;
-                    _lab2.Visible = false;
-                }
+                if (trainingFunctionCB.Text != "")
+                    if (setButton.Text == "SET")
+                    {
+                        _lab1.Visible = false;
+                        _lab2.Visible = true;
+                    }
+                    else if (setButton.Text == "RESET")
+                    {
+                        _lab1.Visible = true;
+                        _lab2.Visible = false;
+                    }
             };
 
 
             for (int i = 0; i < settingsPanel.Controls.Count - 1; i++)
                 settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
             _lab2.Enabled = true;
+
+            void UpdateIterationsLabel()
+            {
+                int iterations = net.IterationsQuantity;
+                string text = $"Iterations: {iterations}";
+                iterationsLab.Text = text;
+            }
+            void UpdateErrorLabel()
+            {
+                double errorValue = Math.Round(net.ErrorList[net.ErrorList.Count - 1], 3);
+                string text = $"Error: {errorValue}";
+                errorLab.Text = text;
+
+                if(errorValue <= 0.01)
+                    errorLab.ForeColor = Color.Red;
+                else
+                    errorLab.ForeColor = Color.Black;
+            }
+            void ActivateTopControls()
+            {
+                for (int i = 0; i < settingsPanel.Controls.Count - 2; i++)
+                    settingsPanel.Controls[i].Enabled = (i < 21) ? true : false;
+            }
+            void ActivateBottomControls()
+            {
+                for (int i = 0; i < settingsPanel.Controls.Count; i++)
+                    settingsPanel.Controls[i].Enabled = (i < 20) ? false : true;
+            }
+            void CleanTableLabels()
+            {
+                for (int i = 0; i < 8; i++)
+                    tableLabels[i].Text = "-";
+            }
+            void CleanErrorLabel()
+            {
+                errorLab.Text = "ERROR: -";
+            }
+            void CleanIterationsLabel()
+            {
+                iterationsLab.Text = "Iterations: 0";
+            }
+            void CleanIterationsNUD()
+            {
+                iterationsNUD.Value = 0;
+            }
+            void RenameSetButton()
+            {
+                if (setButton.Text == "SET")
+                    setButton.Text = "RESET";
+                else if (setButton.Text == "RESET")
+                    setButton.Text = "SET";
+            }
         }
-        
+
+        void CreateNewNeuralNetwork()
+        {
+            net = new Net(
+                neuronsPerLayer, 
+                learningRate, 
+                moment, 
+                maxWeightsRandomize, 
+                minWeightsRandomize, 
+                TrainingSet.GetTrainingSet(trainingFunction) );
+        }
         void UpdateTrainingDataTable()
         {
             for (int i = 0; i < 8; i++)
@@ -633,6 +744,17 @@ namespace CustomisableNW
                 $"{TrainingSet.GetTrainingSet(trainingFunction)[i - 4][2]}";
             }
         }
-
+        void AddToDataTextbox(string str)
+        {
+            dataTextBox.Text += str;
+        }
+        string Separator(int quantity)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < quantity; i++)
+                sb.Append("-");
+            string result = sb.ToString();
+            return result;
+        }
     }
 }

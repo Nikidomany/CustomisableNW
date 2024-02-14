@@ -21,7 +21,8 @@ namespace CustomisableNW
             WelcomePanelGraphics();
             MainPanelGraphics();
             DataPanelGraphics();
-            DiagramPanelGraphics();
+            ErrorDiagramPanelGraphics();
+            WeightsDiagramPanelGraphics();
             SettingsPanelGraphics();
             SchemePanelGraphics();
 

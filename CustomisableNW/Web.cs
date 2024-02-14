@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CustomisableNW
 {
@@ -39,8 +37,11 @@ namespace CustomisableNW
         public int TrainingSetNumber { get { return trainingSetNumber; } }
         private int trainingSetNumber = 0;
 
-        public List<List<Neuron>> Neurons { get { return neurons; } } 
+        public List<List<Neuron>> Neurons { get { return neurons; } }
         private List<List<Neuron>> neurons = new List<List<Neuron>>();
+
+        public int IterationsQuantity { get { return iterationsQuantity; } }
+        private int iterationsQuantity = 0;
 
         public Net(List<int> neuronsPerLayer, float learningRate, float moment, float maxWeightsRandomization, float minWeightsRandomization, List<int[]> trainingSet)
         {
@@ -61,7 +62,7 @@ namespace CustomisableNW
 
         private void InitializeNeurons()
         {
-            for(int i = 0; i < layersQuantity; i++)
+            for (int i = 0; i < layersQuantity; i++)
             {
                 neurons.Add(new List<Neuron>());    // layer adding
 
@@ -73,7 +74,7 @@ namespace CustomisableNW
                         neurons[i][j].Weights.Add(new Weight());
                 }
             }
-            
+
         }
         private void SetInitialNeuronWeights()
         {
@@ -90,14 +91,14 @@ namespace CustomisableNW
         }
         private void ComputeActivations()
         {
-            for(int j = 0; j < 2; j++)
+            for (int j = 0; j < 2; j++)
                 neurons[0][j].Activation = trainingSet[trainingSetNumber][j];  // input neurons
 
             for (int i = 1; i < layersQuantity; i++) // i-th neural layer
-                for(int j = 0; j < neuronsPerLayer[i]; j++) // j-th neuron (in i-th hidden neural layer)
+                for (int j = 0; j < neuronsPerLayer[i]; j++) // j-th neuron (in i-th hidden neural layer)
                 {
                     float inputValue = 0;
-                    for (int k = 0; k < neuronsPerLayer[i-1]; k++)
+                    for (int k = 0; k < neuronsPerLayer[i - 1]; k++)
                         inputValue += neurons[i - 1][k].Activation * neurons[i][j].Weights[k].Value;
                     neurons[i][j].Activation = ActivationFunction.Sigmoid(inputValue);
                 }
@@ -106,10 +107,10 @@ namespace CustomisableNW
         private void BackPropagationMethod()
         {
             ComputeOutputNeuronDelta();
-            for(int i = layersQuantity-1; i > 0; i--)
+            for (int i = layersQuantity - 1; i > 0; i--)
             {
-                for(int j = 0; j < neuronsPerLayer[i]; j++)
-                    for(int k = 0; k < neuronsPerLayer[i-1]; k++)
+                for (int j = 0; j < neuronsPerLayer[i]; j++)
+                    for (int k = 0; k < neuronsPerLayer[i - 1]; k++)
                     {
                         ComputeWeightGradient(i, j, k);
                         ComputeWeightDelta(i, j, k);
@@ -117,7 +118,7 @@ namespace CustomisableNW
                     }
 
                 for (int j = 0; j < neuronsPerLayer[i - 1]; j++)
-                    ComputeNeuronDelta(i-1,j);
+                    ComputeNeuronDelta(i - 1, j);
             }
 
             void ComputeOutputNeuronDelta()
@@ -160,7 +161,7 @@ namespace CustomisableNW
             {
                 float temp = 0;
 
-                for(int x = 0; x < neuronsPerLayer[i+1]; x++)
+                for (int x = 0; x < neuronsPerLayer[i + 1]; x++)
                 {
                     float outgoingWeitghValue = neurons[i + 1][x].Weights[j].Value;
                     float nextNeuronDelta = neurons[i + 1][x].Delta;
@@ -187,33 +188,50 @@ namespace CustomisableNW
             errorList.Add(error);
         }
 
-        public void PlusIteration(bool[] xxxx, int iterationQuantity = 1)
+        public void PlusIteration(bool[] selectedTrainingsets)
         {
             BackPropagationMethod();
-            IncrementTrainSetNumber();
+            IncrementTrainSetNumber(selectedTrainingsets);
             ComputeActivations();
             ComputeError();
-        } // обозвать переменную
-        public void PlusEpoch(bool[] xxxx, int epochsQuantity = 1)
+            IncrementIterationsQuantity();
+        }
+        public void PlusEpoch(bool[] selectedTrainingsets)
         {
+            bool isThereAValidTrainningSet = !selectedTrainingsets.All(x => x == false);
 
-        } // не готовы
+            if (isThereAValidTrainningSet)
+                while (trainingSetNumber != 0)
+                {
+                    PlusIteration(selectedTrainingsets);
+                }
+        }
 
 
 
-        private void IncrementTrainSetNumber()
+        private void IncrementTrainSetNumber(bool[] selectedTrainingsets)
         {
             if (trainingSetNumber == 3)
                 trainingSetNumber = 0;
             else
                 trainingSetNumber++;
+
+            bool isItValidTrainingSet = !selectedTrainingsets[trainingSetNumber];
+            bool isThereAValidTrainningSet = !selectedTrainingsets.All(x => x == false);
+
+            if (isItValidTrainingSet && isThereAValidTrainningSet)
+                IncrementTrainSetNumber(selectedTrainingsets);
+        }
+        private void IncrementIterationsQuantity()
+        {
+            iterationsQuantity++;
         }
     }
 
 
-    
-    
-     
+
+
+
     public class Neuron
     {
         public float Activation
@@ -240,7 +258,7 @@ namespace CustomisableNW
     {
         public float Value
         {
-            get { return values[values.Count-1]; }
+            get { return values[values.Count - 1]; }
             set { values.Add(value); }
         }
         public float Delta
@@ -264,7 +282,7 @@ namespace CustomisableNW
         List<float> gradientList = new List<float>();
     }
 
-    
+
 
     static class ActivationFunction
     {
@@ -293,7 +311,7 @@ namespace CustomisableNW
         AND
     }
 
-    static class TrainingSet 
+    static class TrainingSet
     {
         public static List<int[]> GetTrainingSet(TrainingFunction e)
         {

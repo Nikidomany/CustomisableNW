@@ -1,12 +1,10 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System;
 
 namespace CustomisableNW
 {
     public partial class MainForm
-    {  
+    {
         Panel mainPanel;
         MenuStrip menuStrip;
         StatusStrip statusStrip;
@@ -35,31 +33,46 @@ namespace CustomisableNW
             ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("Calculations");
             toolStripMenuItem1.Click += (o, e) =>
             {
-                diagramPanel.Visible = false;
+                errorDiagramPanel.Visible = false;
                 schemePanel.Visible = false;
+                weightsDiagramPanel.Visible = false;
                 dataPanel.Visible = true;
             };
             menuStrip.Items.Add(toolStripMenuItem1);
 
-            // график значений весов
-            ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem("Weights diagram");
-            toolStripMenuItem2.Click += (o, e) =>
+            // диаграмма ошибки
+            ToolStripMenuItem toolStripMenuItem20 = new ToolStripMenuItem("Error diagram");
+            toolStripMenuItem20.Click += (o, e) =>
             {
                 dataPanel.Visible = false;
                 schemePanel.Visible = false;
-                diagramPanel.Visible = true;
-                DiagramDrawing();
+                weightsDiagramPanel.Visible = false;
+                errorDiagramPanel.Visible = true;
+                DrawErrorDiagram();
             };
-            menuStrip.Items.Add(toolStripMenuItem2);
+            menuStrip.Items.Add(toolStripMenuItem20);
+
+            // диаграмма весов
+            ToolStripMenuItem toolStripMenuItem21 = new ToolStripMenuItem("Weights diagram");
+            toolStripMenuItem21.Click += (o, e) =>
+            {
+                errorDiagramPanel.Visible = false;
+                dataPanel.Visible = false;
+                schemePanel.Visible = false;
+                weightsDiagramPanel.Visible = true;
+                DrawWeightDiagram();
+            };
+            menuStrip.Items.Add(toolStripMenuItem21);
 
             // графическое представление сети
             ToolStripMenuItem toolStripMenuItem3 = new ToolStripMenuItem("Web scheme");
             toolStripMenuItem3.Click += (o, e) =>
             {
-                diagramPanel.Visible = false;
+                errorDiagramPanel.Visible = false;
                 dataPanel.Visible = false;
+                weightsDiagramPanel.Visible = false;
                 schemePanel.Visible = true;
-                Drawing();
+                DrawScheme();
                 if (setButton.Text == "RESET") // КОСТЫЛЬ!!!
                     UpdateNeuronLabels();
             };
@@ -71,7 +84,7 @@ namespace CustomisableNW
             {
                 string text = "Разработка данного приложения\nцеликом и полностью лежит\nна плечах IlyaProgrammer\n ВО СВЁМ ВИНОВАТ ОН!!!!!!.";
                 string caption = "Информация к размышлению";
-                MessageBox.Show(text,caption);
+                MessageBox.Show(text, caption);
             };
             menuStrip.Items.Add(toolStripMenuItem4);
 

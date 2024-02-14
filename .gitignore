@@ -2,3 +2,5 @@
 *.pdb
 *.suo
 *.vsidx
+*.csproj
+*.cache

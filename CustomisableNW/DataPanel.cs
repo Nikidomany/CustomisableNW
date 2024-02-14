@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Text;
+using System.Windows.Forms;
 
 namespace CustomisableNW
 {
@@ -39,7 +39,7 @@ namespace CustomisableNW
             string result = "\r\n\r\nNeural activations:";
 
             result += "\r\n             ";
-            for(int i = 0; i < net.Neurons.Count; i++)
+            for (int i = 0; i < net.Neurons.Count; i++)
             {
                 string layerName = (i == 0 ? "Inp" : (i == net.Neurons.Count - 1 ? " Out" : $"  {i}-H "));
                 result += $"  {layerName} ";
@@ -50,11 +50,11 @@ namespace CustomisableNW
                 if (net.Neurons[i].Count > maxNeuronsQuantity)
                     maxNeuronsQuantity = net.Neurons[i].Count;
 
-            for(int j = 0; j < maxNeuronsQuantity; j++)
+            for (int j = 0; j < maxNeuronsQuantity; j++)
             {
                 result += $"\r\n        N{j} ";
 
-                for(int i = 0; i < net.Neurons.Count; i++)
+                for (int i = 0; i < net.Neurons.Count; i++)
                 {
                     bool isExist = j < net.Neurons[i].Count;
                     if (!isExist)
@@ -68,7 +68,7 @@ namespace CustomisableNW
 
                     result += $"   {activationString}  ";
                 }
-            
+
             }
 
             dataTextBox.Text += result;
@@ -79,21 +79,21 @@ namespace CustomisableNW
 
             result += "\r\n\r\nWeights:";
 
-            for(int i = 1; i < net.Neurons.Count; i++)
+            for (int i = 1; i < net.Neurons.Count; i++)
             {
-                result += $"\r\n   • {(i == 1 ? "input layer - 1" : (i == net.Neurons.Count-1 ? $"{i - 1} layer - output" : $"{i - 1} layer - {i}"))} layer";
+                result += $"\r\n   • {(i == 1 ? "input layer - 1" : (i == net.Neurons.Count - 1 ? $"{i - 1} layer - output" : $"{i - 1} layer - {i}"))} layer";
                 result += "\r\n           ";
 
-                for(int x = 0; x < net.Neurons[i].Count; x++)
+                for (int x = 0; x < net.Neurons[i].Count; x++)
                     result += $"     N{i}{x}  ";
 
-                for(int j = 0; j < net.Neurons[i-1].Count; j++)
+                for (int j = 0; j < net.Neurons[i - 1].Count; j++)
                 {
                     result += $"\r\n        N{i - 1}{j}";
 
-                    for(int k = 0; k < net.Neurons[i].Count; k++)
+                    for (int k = 0; k < net.Neurons[i].Count; k++)
                     {
-                        double weightValue = Math.Round(net.Neurons[i][k].Weights[j].Value,2);
+                        double weightValue = Math.Round(net.Neurons[i][k].Weights[j].Value, 2);
                         string sign = (weightValue < 0 ? "" : " ");
 
                         result += $" {sign}{weightValue} ";
@@ -104,7 +104,7 @@ namespace CustomisableNW
             }
 
             dataTextBox.Text += result;
-        } 
+        }
         private void PrintNeurosDelta()
         {
             string result = "\r\n\r\nNeurons delta:";
@@ -166,7 +166,7 @@ namespace CustomisableNW
                         float gradientValue = net.Neurons[i][k].Weights[j].Gradient;
                         string sign = (gradientValue < 0 ? "" : " ");
 
-                        result += $" {sign}{Math.Round(gradientValue,2)} ";
+                        result += $" {sign}{Math.Round(gradientValue, 2)} ";
                     }
 
                 }
@@ -215,8 +215,11 @@ namespace CustomisableNW
 
             dataTextBox.Text += result;
         }
-
-
+        private void PrintIterationNumber()
+        {
+            int iterationsQuantity = net.IterationsQuantity;
+            dataTextBox.Text += $"\r\n\r\n{Separator(6)} {iterationsQuantity} ITERATION {Separator(6)}";
+        }
 
     }
 
