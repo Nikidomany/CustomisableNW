@@ -40,6 +40,19 @@ namespace CustomisableNW
         {
             Graphics diagram = weightsDiagramPB.CreateGraphics();
             Pen axisPen = new Pen(Color.Black, 2);
+            List<Pen> weightsPens = new List<Pen>
+            {
+                new Pen(Color.Red, 1),
+                new Pen(Color.Green, 1),
+                new Pen(Color.Blue, 1),
+                new Pen(Color.Yellow, 1),
+                new Pen(Color.Black, 1),
+                new Pen(Color.Pink, 1),
+                new Pen(Color.Orange, 1),
+                new Pen(Color.Purple, 1),
+                new Pen(Color.Gray, 1),
+                new Pen(Color.Olive, 1)
+            };
 
             ClearWeigthDiagram();
             DrawWeightDiagramAxis();
@@ -47,6 +60,8 @@ namespace CustomisableNW
             if (neuron == null || neuron.Weights.Count < 2)
                 return;
             DrawWeightDiagram();
+            DrawDiagramLegendApart();
+
 
 
             void ClearWeigthDiagram()
@@ -133,20 +148,6 @@ namespace CustomisableNW
             }
             void DrawWeightDiagram()
             {
-                List<Pen> pens = new List<Pen>
-                {
-                    new Pen(Color.Red, 1),
-                    new Pen(Color.Green, 1),
-                    new Pen(Color.Blue, 1),
-                    new Pen(Color.Yellow, 1),
-                    new Pen(Color.Black, 1),
-                    new Pen(Color.Pink, 1),
-                    new Pen(Color.Orange, 1),
-                    new Pen(Color.Purple, 1),
-                    new Pen(Color.Gray, 1),
-                    new Pen(Color.Olive, 1)
-                };
-
                 Point pointZero = new Point(weightsDiagramPB.Width * 1 / 20, weightsDiagramPB.Height / 2);
                 int xRange = weightsDiagramPB.Width * 18 / 20,
                     yRange = weightsDiagramPB.Height * 9 / 20;
@@ -162,17 +163,70 @@ namespace CustomisableNW
                             x2 = pointZero.X + xStep * j,
                             y2 = pointZero.Y - (int)(weightValue2 / 10 * yRange);
 
-                        diagram.DrawLine(pens[i], x1, y1, x2, y2);
+                        diagram.DrawLine(weightsPens[i], x1, y1, x2, y2);
                     }
             }
             
             void DrawDiagramLegendNextToDiagram()
             {
+                int weightsQuantity = neuron.Weights.Count;
+                List<float> weightsValue = new List<float>();
+                for(int i = 0; i < weightsQuantity; i++)
+                {
+                    float weightValue = neuron.Weights[i].Value;
+                    weightsValue.Add(weightValue);
+                }
+
+
+
+                // выносные линии под углом
+
+
+                for(int i = 0; i < weightsQuantity; i++)
+                {
+
+                }
+                for (int i = 0; i < weightsQuantity; i++)
+                {
+
+                }
+
 
             }
             void DrawDiagramLegendApart()
             {
+                int lineSpacing = 30;
+                int weightsQuantity = neuron.Weights.Count;
+                Point startPoint = new Point(weightsDiagramPB.Width * 17/20, weightsDiagramPB.Height - lineSpacing * weightsQuantity);
+                
+                // Color line drawing
+                for(int i = 0; i < weightsQuantity; i++)
+                {
+                    Pen pen = weightsPens[i];
+                    int x1 = startPoint.X,
+                        y1 = startPoint.Y + lineSpacing * i,
+                        x2 = x1 + 40,
+                        y2 = y1;
 
+                    diagram.DrawLine(pen, x1, y1, x2, y2);
+                }
+                // Line labels writing
+                for (int i = 0; i < weightsQuantity; i++)
+                {
+                    int x = startPoint.X + 40,
+                        y = startPoint.Y + lineSpacing * i - 15;
+                    string labelText = $"w{i}";
+                    Label label = new Label
+                    {
+                        Text = labelText,
+                        Font = new Font("Arial", 13),
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        Location = new Point(x, y),
+                        Size = new Size(40, 20)
+                    };
+
+                    weightsDiagramPB.Controls.Add(label);
+                }
             }
 
         }
