@@ -7,25 +7,26 @@ namespace CustomisableNW
 
     public partial class MainForm
     {
-        Panel errorDiagramPanel = new Panel();
-        PictureBox errorDiagramPB = new PictureBox();
+        Panel errorDiagramPanel;
+        PictureBox errorDiagramPB;
 
         // график значений весов
         void ErrorDiagramPanelGraphics()
         {
-            errorDiagramPanel.Visible = false;
-            errorDiagramPanel.Location = new Point(0, menuStrip.Height);
-            errorDiagramPanel.Size = new Size(mainPanel.Width, mainPanel.Height - menuStrip.Height - statusStrip.Height);
+            errorDiagramPanel = new Panel
+            {
+                Visible = false,
+                Location = new Point(0, menuStrip.Height),
+                Size = new Size(mainPanel.Width, mainPanel.Height - menuStrip.Height - statusStrip.Height),
+                BackColor = Color.White                
+            };
             mainPanel.Controls.Add(errorDiagramPanel);
 
-            errorDiagramPB.Dock = DockStyle.Fill;
-            errorDiagramPB.BorderStyle = BorderStyle.Fixed3D;
-            /*с
-             * 
-             * 
-             * 
-             * 
-             */
+            errorDiagramPB = new PictureBox
+            {
+                Dock = DockStyle.Fill,
+                BorderStyle = BorderStyle.Fixed3D
+            };
             errorDiagramPanel.Controls.Add(errorDiagramPB);
         }
 
@@ -71,7 +72,7 @@ namespace CustomisableNW
             {
                 Point scaleLabelsStartPosition = new Point(0, errorDiagramPB.Height * 1 / 20);
                 Point scaleLinesStartPosition = new Point(errorDiagramPB.Width * 1 / 20 - 5, errorDiagramPB.Height * 1 / 20);
-                int xInterval = errorDiagramPB.Width * 18 / 20 / 50,
+                int xInterval = errorDiagramPB.Width * 18 / 20 / 100,
                     yInterval = errorDiagramPB.Height * 18 / 20 / 20;
 
                 for (int i = 0; i < 11; i++)
@@ -92,14 +93,14 @@ namespace CustomisableNW
                 }
 
 
-                for (int i = 1; i < 51; i++)
+                for (int i = 1; i < 101; i++)
                 {
                     int x1 = errorDiagramPanel.Width * 1 / 20 + xInterval * i,
                         y1 = errorDiagramPanel.Height / 2 - (i % 5 == 0 ? 6 : 3),
                         x2 = x1,
                         y2 = errorDiagramPanel.Height / 2 + (i % 5 == 0 ? 6 : 3);
 
-                    if(i % 5 == 0)
+                    if(i % 10 == 0)
                     {
                         Label scaleLabel = new Label
                         {
@@ -108,8 +109,8 @@ namespace CustomisableNW
                             ForeColor = Color.Black,
                             BackColor = Color.White,
                             Font = new Font(font, 12),
-                            Size = new Size(30, 20),
-                            Location = new Point(x2 - 13, y1 + 12)
+                            Size = new Size(35, 20),
+                            Location = new Point(x2 - 16, y1 + 12)
                         };
                         errorDiagramPB.Controls.Add(scaleLabel);
                     }
@@ -128,7 +129,7 @@ namespace CustomisableNW
                 int xDiagramRange = errorDiagramPB.Width * 18 / 20,
                     yDiagramRange = errorDiagramPB.Height * 9 / 20;
 
-                int xInterval = xDiagramRange / 50;
+                int xInterval = xDiagramRange / 100;
 
                 for (int i = 1; i < errorList.Count; i++)
                 {

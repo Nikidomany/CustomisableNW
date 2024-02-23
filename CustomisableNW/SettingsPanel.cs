@@ -483,6 +483,8 @@ namespace CustomisableNW
                 for (int i = 0; i < iterationsNUD.Value; i++)
                 {
                     net.PlusIteration(selectedSetsList);
+                    if (!(bool)printDataButton.Tag)
+                        continue;
                     PrintIterationNumber();
                     PrintWeightsGradient();
                     PrintWeightsDelta();
@@ -491,6 +493,7 @@ namespace CustomisableNW
                     PrintActivations();
                     PrintError();
                 }
+                DrawErrorDiagram();
                 DrawScheme();
                 UpdateErrorLabel();
                 UpdateIterationsLabel();
@@ -508,9 +511,11 @@ namespace CustomisableNW
             endButton.Click += (o, e) =>
             {
                 
-                while (net.ErrorList[net.ErrorList.Count-1] != 0 && net.IterationsQuantity < 50)
+                while (net.ErrorList[net.ErrorList.Count-1] >= 0.01 && net.IterationsQuantity < 100)
                 {
                     net.PlusIteration(selectedSetsList);
+                    if (!(bool)printDataButton.Tag)
+                        continue;
                     PrintIterationNumber();
                     PrintWeightsGradient();
                     PrintWeightsDelta();
@@ -538,13 +543,17 @@ namespace CustomisableNW
             plusIterationButton.Click += (o, e) =>
             {
                 net.PlusIteration(selectedSetsList);
-                PrintIterationNumber();
-                PrintWeightsGradient();
-                PrintWeightsDelta();
-                PrintNeurosDelta();
-                PrintWeights();
-                PrintActivations();
-                PrintError();
+                if (!(bool)printDataButton.Tag)
+                {
+                    PrintIterationNumber();
+                    PrintWeightsGradient();
+                    PrintWeightsDelta();
+                    PrintNeurosDelta();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+                DrawErrorDiagram();
                 UpdateErrorLabel();
                 UpdateIterationsLabel();
             };
@@ -561,13 +570,17 @@ namespace CustomisableNW
             plusEpochButton.Click += (s, e) =>
             {
                 net.PlusIteration(selectedSetsList);
-                PrintIterationNumber();
-                PrintWeightsGradient();
-                PrintWeightsDelta();
-                PrintNeurosDelta();
-                PrintWeights();
-                PrintActivations();
-                PrintError();
+                if (!(bool)printDataButton.Tag)
+                {
+                    PrintIterationNumber();
+                    PrintWeightsGradient();
+                    PrintWeightsDelta();
+                    PrintNeurosDelta();
+                    PrintWeights();
+                    PrintActivations();
+                    PrintError();
+                }
+                DrawErrorDiagram();
                 UpdateErrorLabel();
                 UpdateIterationsLabel();
             };
@@ -727,13 +740,24 @@ namespace CustomisableNW
 
         void CreateNewNeuralNetwork()
         {
+            int firstTrainingSetNumber = 0;
+            for(int i = 0; i < 4; i++)
+            {
+                if (selectedSetsList[i])
+                {
+                    firstTrainingSetNumber = i;
+                    break;
+                }
+            }
+
             net = new Net(
                 neuronsPerLayer, 
                 learningRate, 
                 moment, 
                 maxWeightsRandomize, 
                 minWeightsRandomize, 
-                TrainingSet.GetTrainingSet(trainingFunction) );
+                TrainingSet.GetTrainingSet(trainingFunction),
+                firstTrainingSetNumber);
         }
         void UpdateTrainingDataTable()
         {

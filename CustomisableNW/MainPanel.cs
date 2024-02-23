@@ -8,6 +8,8 @@ namespace CustomisableNW
         Panel mainPanel;
         MenuStrip menuStrip;
         StatusStrip statusStrip;
+        ToolStripButton weightsPointingLabelsDrawingModeButton;
+        ToolStripButton printDataButton;
 
         string font = "Arial";
 
@@ -90,17 +92,60 @@ namespace CustomisableNW
 
             mainPanel.Controls.Add(menuStrip);
 
+            // printDataButton
+            printDataButton = new ToolStripButton
+            {
+                Text = "Hide data",
+                Tag = true,
+                BackColor = Color.LightGray,
+            };
+            printDataButton.Click += (o, e) =>
+            {
+                if(printDataButton.Text == "Hide data")
+                {
+                    printDataButton.Text = "Show data";
+                    printDataButton.Tag = false;
+                }
+                else if (printDataButton.Text == "Show data")
+                {
+                    printDataButton.Text = "Hide data";
+                    printDataButton.Tag = true;
+                }
+            };
+            menuStrip.Items.Add(printDataButton);
+
+
             // statusStrip settings
             statusStrip = new StatusStrip
             {
-                Dock = DockStyle.Bottom,
-                BackColor = Color.Red
+                Dock = DockStyle.Bottom
             };
+            statusStrip.Items.Add("Labels drawing mode:");
             mainPanel.Controls.Add(statusStrip);
 
-
-
-
+            // weightsPointingLabelsDrawingModeButton
+            weightsPointingLabelsDrawingModeButton = new ToolStripButton
+            {
+                Text = "Near diagram",
+                Tag = "Near",
+                BackColor = Color.Gray,
+            };
+            weightsPointingLabelsDrawingModeButton.Click += (o, e) =>
+            {
+                if (weightsPointingLabelsDrawingModeButton.Tag.ToString() == "Near")
+                {
+                    weightsPointingLabelsDrawingModeButton.Text = "Apart diagram";
+                    weightsPointingLabelsDrawingModeButton.Tag = "Apart";
+                    DrawWeightDiagram();
+                }
+                else if (weightsPointingLabelsDrawingModeButton.Tag.ToString() == "Apart")
+                {
+                    weightsPointingLabelsDrawingModeButton.Text = "Near diagram";
+                    weightsPointingLabelsDrawingModeButton.Tag = "Near";
+                    DrawWeightDiagram();
+                }
+            };
+            statusStrip.Items.Add(weightsPointingLabelsDrawingModeButton);
 
 
         }

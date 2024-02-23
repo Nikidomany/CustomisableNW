@@ -35,7 +35,7 @@ namespace CustomisableNW
         private List<float> errorList = new List<float>();
 
         public int TrainingSetNumber { get { return trainingSetNumber; } }
-        private int trainingSetNumber = 0;
+        private int trainingSetNumber;
 
         public List<List<Neuron>> Neurons { get { return neurons; } }
         private List<List<Neuron>> neurons = new List<List<Neuron>>();
@@ -43,7 +43,7 @@ namespace CustomisableNW
         public int IterationsQuantity { get { return iterationsQuantity; } }
         private int iterationsQuantity = 0;
 
-        public Net(List<int> neuronsPerLayer, float learningRate, float moment, float maxWeightsRandomization, float minWeightsRandomization, List<int[]> trainingSet)
+        public Net(List<int> neuronsPerLayer, float learningRate, float moment, float maxWeightsRandomization, float minWeightsRandomization, List<int[]> trainingSet, int firstTrainingSetNumber)
         {
             this.neuronsPerLayer = neuronsPerLayer;
             layersQuantity = neuronsPerLayer.Count;
@@ -52,6 +52,7 @@ namespace CustomisableNW
             this.maxWeightsRandomization = maxWeightsRandomization;
             this.minWeightsRandomization = minWeightsRandomization;
             this.trainingSet = trainingSet;
+            this.trainingSetNumber = firstTrainingSetNumber;
 
             InitializeNeurons();
             SetInitialNeuronWeights();
@@ -76,6 +77,7 @@ namespace CustomisableNW
             }
 
         }
+
         private void SetInitialNeuronWeights()
         {
             Random random = new Random();

@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
+
 
 namespace CustomisableNW
 {
@@ -53,6 +56,7 @@ namespace CustomisableNW
                 new Pen(Color.Gray, 1),
                 new Pen(Color.Olive, 1)
             };
+            List<Point> lastWeightsDiagramPoints = new List<Point>();
 
             ClearWeigthDiagram();
             DrawWeightDiagramAxis();
@@ -60,12 +64,16 @@ namespace CustomisableNW
             if (neuron == null || neuron.Weights.Count < 2)
                 return;
             DrawWeightDiagram();
-            DrawDiagramLegendApart();
+            if(weightsPointingLabelsDrawingModeButton.Tag.ToString() == "Apart")
+                DrawDiagramLegendApart();
+            else
+                DrawDiagramLegendNextToDiagram();
 
 
 
             void ClearWeigthDiagram()
             {
+                weightsDiagramPB.Controls.Clear();
                 diagram.Clear(Color.White);
             }
             void DrawWeightDiagramAxis()
@@ -96,8 +104,8 @@ namespace CustomisableNW
 
                 // X axis
                 Point xAxisStartPoint = new Point(weightsDiagramPB.Width * 1 / 20, weightsDiagramPB.Height / 2);
-                int xStep = weightsDiagramPB.Width * 18/20 / 49;
-                for(int i = 1; i < 51; i++)
+                int xStep = weightsDiagramPB.Width * 18/20 / 99;
+                for(int i = 1; i < 101; i++)
                 {
                     int x1 = xAxisStartPoint.X + xStep * i,
                         y1 = xAxisStartPoint.Y - (i % 5 == 0 ? 6 : 3),
@@ -106,7 +114,7 @@ namespace CustomisableNW
                     Pen pen = i % 5 == 0 ? boldDivivionPen : thinDivivionPen;
                     diagram.DrawLine(pen, x1, y1, x2, y2);
 
-                    if (i % 5 == 0)
+                    if (i % 10 == 0)
                     {
                         Label dividionLabel = new Label
                         {
@@ -115,8 +123,8 @@ namespace CustomisableNW
                             ForeColor = Color.Black,
                             BackColor = Color.Transparent,
                             Font = new Font(font, 12),
-                            Size = new Size(30, 20),
-                            Location = new Point(xAxisStartPoint.X + xStep * i - 13, xAxisStartPoint.Y + 15)
+                            Size = new Size(35, 20),
+                            Location = new Point(xAxisStartPoint.X + xStep * i - 17, xAxisStartPoint.Y + 15)
                         };
                         weightsDiagramPB.Controls.Add(dividionLabel);
                     }
@@ -124,7 +132,7 @@ namespace CustomisableNW
 
                 // Y axis
                 Point yAxisStartPoint = new Point(weightsDiagramPB.Width * 1 / 20, weightsDiagramPB.Height * 1 / 20);
-                int yStep = weightsDiagramPB.Height * 18/20 / 19;
+                int yStep = weightsDiagramPB.Height * 18/20 / 19 - 1;
                 for(int i = 0; i < 21; i++)
                 {
                     int x1 = yAxisStartPoint.X - 3,
@@ -151,10 +159,11 @@ namespace CustomisableNW
                 Point pointZero = new Point(weightsDiagramPB.Width * 1 / 20, weightsDiagramPB.Height / 2);
                 int xRange = weightsDiagramPB.Width * 18 / 20,
                     yRange = weightsDiagramPB.Height * 9 / 20;
-                int xStep = xRange / 50;
+                int xStep = xRange / 100;
 
                 for (int i = 0; i < neuron.Weights.Count; i++)
-                    for (int j = 1; j < neuron.Weights[i].ValuesList.Count && j < 50; j++)
+                {
+                    for (int j = 1; j < neuron.Weights[i].ValuesList.Count && j < 100; j++)
                     {
                         float weightValue1 = neuron.Weights[i].ValuesList[j - 1],
                               weightValue2 = neuron.Weights[i].ValuesList[j];
@@ -164,32 +173,74 @@ namespace CustomisableNW
                             y2 = pointZero.Y - (int)(weightValue2 / 10 * yRange);
 
                         diagram.DrawLine(weightsPens[i], x1, y1, x2, y2);
+
+                        bool isLast = (j + 1 >= neuron.Weights[i].ValuesList.Count) || (j + 1 >= 100);
+                        if (isLast)
+                            lastWeightsDiagramPoints.Add(new Point(x2, y2));
                     }
+                   
+
+                }
             }
             
             void DrawDiagramLegendNextToDiagram()
             {
+                lastWeightsDiagramPoints = lastWeightsDiagramPoints.OrderBy(p => p.X).ToList();
+                
+                
                 int weightsQuantity = neuron.Weights.Count;
-                List<float> weightsValue = new List<float>();
-                for(int i = 0; i < weightsQuantity; i++)
-                {
-                    float weightValue = neuron.Weights[i].Value;
-                    weightsValue.Add(weightValue);
-                }
+                List<(Point, Point)> pointingLineCoordinates = new List<(Point, Point)>();
+                int pointingLineLenght = 30;
+                Pen pointingLinePen = new Pen(Color.Black, 1);
+                float angle180DegreesInRadians = 3.142f;
+                float angleBetweenPointingLines = angle180DegreesInRadians / weightsQuantity;
 
-
-
-                // выносные линии под углом
-
-
-                for(int i = 0; i < weightsQuantity; i++)
-                {
-
-                }
+                // pointing lines coordinates computing
                 for (int i = 0; i < weightsQuantity; i++)
                 {
+                    int x1 = lastWeightsDiagramPoints[i].X + 4,
+                        y1 = lastWeightsDiagramPoints[i].Y;
+                    Point firstPoint = new Point(x1, y1);
 
+                    int x2 = x1 + (int)(pointingLineLenght * Math.Sin(angleBetweenPointingLines * i)),
+                        y2 = y1 - (int)(pointingLineLenght * Math.Cos(angleBetweenPointingLines * i));
+                    Point lastPoint = new Point(x2,y2);
+
+                    pointingLineCoordinates.Add((firstPoint, lastPoint));
                 }
+
+                // pointing lines drawing
+                for(int i = 0; i < weightsQuantity; i++)
+                    diagram.DrawLine(
+                        pointingLinePen,
+                        pointingLineCoordinates[i].Item1,
+                        pointingLineCoordinates[i].Item2);
+
+                // pointing lines labels drawing
+                for (int i = 0; i < weightsQuantity; i++)
+                {
+                    int x = pointingLineCoordinates[i].Item2.X + 10,
+                        y = pointingLineCoordinates[i].Item2.Y - 10;
+
+                    Label pointingLineLabel = new Label
+                    {
+                        Text = i.ToString(),
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        ForeColor = Color.Black,
+                        BackColor = Color.Transparent,
+                        Font = new Font(font, 12),
+                        Size = new Size(30, 20),
+                        Location = new Point(x, y)
+                    };
+                    weightsDiagramPB.Controls.Add(pointingLineLabel);
+                }
+
+
+
+
+
+
+
 
 
             }
